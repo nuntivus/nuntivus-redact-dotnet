@@ -7,9 +7,9 @@
 <p align="center"><strong>Composable detection and redaction for .NET applications.</strong><br />Explicit policies. Bounded document processing. Optional DI and ASP.NET Core integration.</p>
 
 <p align="center">
-  <a href="https://github.com/OWNER/REPOSITORY/actions/workflows/ci.yml"><img src="https://github.com/OWNER/REPOSITORY/actions/workflows/ci.yml/badge.svg" alt="CI workflow status — repository placeholder" /></a>
-  <a href="https://github.com/OWNER/REPOSITORY/actions/workflows/release.yml"><img src="https://github.com/OWNER/REPOSITORY/actions/workflows/release.yml/badge.svg" alt="Package preparation workflow status — no publishing; repository placeholder" /></a>
-  <a href="https://github.com/OWNER/REPOSITORY/actions/workflows/security.yml"><img src="https://github.com/OWNER/REPOSITORY/actions/workflows/security.yml/badge.svg" alt="Dependency audit workflow status — repository placeholder" /></a>
+  <a href="https://github.com/nuntivus/nuntivus-redact-dotnet/actions/workflows/ci.yml"><img src="https://github.com/nuntivus/nuntivus-redact-dotnet/actions/workflows/ci.yml/badge.svg" alt="CI workflow status — repository placeholder" /></a>
+  <a href="https://github.com/nuntivus/nuntivus-redact-dotnet/actions/workflows/release.yml"><img src="https://github.com/nuntivus/nuntivus-redact-dotnet/actions/workflows/release.yml/badge.svg" alt="Package preparation workflow status — no publishing; repository placeholder" /></a>
+  <a href="https://github.com/nuntivus/nuntivus-redact-dotnet/actions/workflows/security.yml"><img src="https://github.com/nuntivus/nuntivus-redact-dotnet/actions/workflows/security.yml/badge.svg" alt="Dependency audit workflow status — repository placeholder" /></a>
 </p>
 <p align="center">
   <a href="global.json"><img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&amp;logo=dotnet" alt="Targets .NET 10" /></a>
