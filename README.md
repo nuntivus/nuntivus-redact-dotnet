@@ -18,14 +18,14 @@
   <a href="docs/GETTING_STARTED.md"><img src="https://img.shields.io/badge/NuGet-not%20published-768390?style=flat-square&amp;logo=nuget" alt="NuGet packages: not published" /></a>
 </p>
 <p align="center">
-  <a href="https://github.com/OWNER/REPOSITORY/commits"><img src="https://img.shields.io/github/last-commit/OWNER/REPOSITORY?style=flat-square" alt="Last commit — repository placeholder" /></a>
-  <a href="https://github.com/OWNER/REPOSITORY/issues"><img src="https://img.shields.io/github/issues/OWNER/REPOSITORY?style=flat-square" alt="Open issues — repository placeholder" /></a>
-  <a href="https://github.com/OWNER/REPOSITORY/stargazers"><img src="https://img.shields.io/github/stars/OWNER/REPOSITORY?style=flat-square" alt="GitHub stars — repository placeholder" /></a>
+  <a href="https://github.com/nuntivus/nuntivus-redact-dotnet/commits"><img src="https://img.shields.io/github/last-commit/nuntivus/nuntivus-redact-dotnet?style=flat-square" alt="Last commit — repository placeholder" /></a>
+  <a href="https://github.com/nuntivus/nuntivus-redact-dotnet/issues"><img src="https://img.shields.io/github/issues/nuntivus/nuntivus-redact-dotnet?style=flat-square" alt="Open issues — repository placeholder" /></a>
+  <a href="https://github.com/nuntivus/nuntivus-redact-dotnet/stargazers"><img src="https://img.shields.io/github/stars/nuntivus/nuntivus-redact-dotnet?style=flat-square" alt="GitHub stars — repository placeholder" /></a>
 </p>
 
 <p align="center"><a href="docs/GETTING_STARTED.md">Get started</a> · <a href="docs/README.md">Documentation</a> · <a href="docs/formats/structured.md">Supported formats</a> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="docs/PROJECT_PLAN.md">Roadmap</a></p>
 
-> **GitHub setup:** `OWNER/REPOSITORY` is an intentional placeholder. Replace it with this library's real repository identity before launch; remote badges will not work until configured. See the [GitHub setup checklist](docs/GITHUB_SETUP.md). Package preparation is not a deployment or public release.
+> **GitHub setup:** `nuntivus/nuntivus-redact-dotnet` is an intentional placeholder. Replace it with this library's real repository identity before launch; remote badges will not work until configured. See the [GitHub setup checklist](docs/GITHUB_SETUP.md). Package preparation is not a deployment or public release.
 >
 > **Alpha / security boundary:** NuntivusRedact is not a complete document-sanitization product. Successful replacement means configured matches were transformed—not that every sensitive value was found. Office, PDF, images and OCR are unsupported. No NuGet package is currently published.
 
