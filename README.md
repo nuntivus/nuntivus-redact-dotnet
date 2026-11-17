@@ -25,10 +25,6 @@
 
 <p align="center"><a href="docs/GETTING_STARTED.md">Get started</a> · <a href="docs/README.md">Documentation</a> · <a href="docs/formats/structured.md">Supported formats</a> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="docs/PROJECT_PLAN.md">Roadmap</a></p>
 
-> **GitHub setup:** `nuntivus/nuntivus-redact-dotnet` is an intentional placeholder. Replace it with this library's real repository identity before launch; remote badges will not work until configured. See the [GitHub setup checklist](docs/GITHUB_SETUP.md). Package preparation is not a deployment or public release.
->
-> **Alpha / security boundary:** NuntivusRedact is not a complete document-sanitization product. Successful replacement means configured matches were transformed—not that every sensitive value was found. Office, PDF, images and OCR are unsupported. No NuGet package is currently published.
-
 ## Why NuntivusRedact?
 
 NuntivusRedact is a modular **.NET 10** library for applications that need to detect candidate sensitive values and apply explicit redaction policies. It is intended for use in the parent Nuntivus application and other .NET projects, without requiring the parent application's infrastructure.
