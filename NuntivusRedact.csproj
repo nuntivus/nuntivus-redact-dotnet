@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>NuntivusRedact</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".github\ISSUE_TEMPLATE\bug_report.yml" />
+    <None Include="benchmarks\NuntivusRedact.Benchmarks\NuntivusRedact.Benchmarks.csproj" />
+    <None Include="samples\NuntivusRedact.Sample.Console\NuntivusRedact.Sample.Console.csproj" />
+    <None Include="samples\NuntivusRedact.Sample.CustomDetector\NuntivusRedact.Sample.CustomDetector.csproj" />
+    <None Include="samples\NuntivusRedact.Sample.DependencyInjection\NuntivusRedact.Sample.DependencyInjection.csproj" />
+    <None Include="samples\NuntivusRedact.Sample.WebApi\NuntivusRedact.Sample.WebApi.csproj" />
+    <None Include="src\NuntivusRedact.AspNetCore\NuntivusRedact.AspNetCore.csproj" />
+    <None Include="src\NuntivusRedact.Core\NuntivusRedact.Core.csproj" />
+    <None Include="src\NuntivusRedact.Detectors.PersonalData\NuntivusRedact.Detectors.PersonalData.csproj" />
+    <None Include="src\NuntivusRedact.Detectors.Regex\NuntivusRedact.Detectors.Regex.csproj" />
+    <None Include="src\NuntivusRedact.Extensions.DependencyInjection\NuntivusRedact.Extensions.DependencyInjection.csproj" />
+    <None Include="src\NuntivusRedact.Formats.Csv\NuntivusRedact.Formats.Csv.csproj" />
+    <None Include="src\NuntivusRedact.Formats.Json\NuntivusRedact.Formats.Json.csproj" />
+    <None Include="src\NuntivusRedact.Formats.Text\NuntivusRedact.Formats.Text.csproj" />
+    <None Include="src\NuntivusRedact.Formats.Xml\NuntivusRedact.Formats.Xml.csproj" />
+    <None Include="src\NuntivusRedact.Strategies\NuntivusRedact.Strategies.csproj" />
+    <None Include="tests\NuntivusRedact.Architecture.Tests\NuntivusRedact.Architecture.Tests.csproj" />
+    <None Include="tests\NuntivusRedact.Benchmarks.Tests\NuntivusRedact.Benchmarks.Tests.csproj" />
+    <None Include="tests\NuntivusRedact.Detectors.Tests\NuntivusRedact.Detectors.Tests.csproj" />
+    <None Include="tests\NuntivusRedact.Formats.Tests\NuntivusRedact.Formats.Tests.csproj" />
+    <None Include="tests\NuntivusRedact.Integration.Tests\NuntivusRedact.Integration.Tests.csproj" />
+    <None Include="tests\NuntivusRedact.Security.Tests\NuntivusRedact.Security.Tests.csproj" />
+    <None Include="tests\NuntivusRedact.Strategies.Tests\NuntivusRedact.Strategies.Tests.csproj" />
+  </ItemGroup>
+
+</Project>

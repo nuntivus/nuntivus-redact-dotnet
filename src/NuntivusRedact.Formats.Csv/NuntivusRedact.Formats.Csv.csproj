@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsPackable>true</IsPackable></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../NuntivusRedact.Formats.Text/NuntivusRedact.Formats.Text.csproj" /></ItemGroup>
+  <ItemGroup><PackageReference Include="CsvHelper" /></ItemGroup>
+</Project>

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsPackable>true</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../NuntivusRedact.Formats.Text/NuntivusRedact.Formats.Text.csproj" />
+    <ProjectReference Include="../NuntivusRedact.Extensions.DependencyInjection/NuntivusRedact.Extensions.DependencyInjection.csproj" />
+  </ItemGroup>
+</Project>

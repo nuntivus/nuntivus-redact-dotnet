@@ -1,0 +1,18 @@
+name: Bug report
+description: Report a reproducible defect using synthetic data only.
+body:
+  - type: markdown
+    attributes:
+      value: Do not include real documents, personal data, keys or private vulnerability details. Read SECURITY.md first.
+  - type: textarea
+    id: repro
+    attributes:
+      label: Synthetic reproduction and expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: SDK, operating system and package version
+    validations:
+      required: true

@@ -1,0 +1,20 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "NuntivusRedact local sample", "version": "0.1.0-alpha.1", "description": "Configured-match replacement only, not complete discovery. UTF-8 raw bodies, no multipart. Add authentication, TLS and rate limits before deployment." },
+  "paths": {
+    "/redact/{format}": {
+      "post": {
+        "operationId": "RedactDocument",
+        "parameters": [{ "name": "format", "in": "path", "required": true, "schema": { "type": "string", "enum": ["text", "csv", "json", "xml"] } }],
+        "requestBody": { "required": true, "content": { "application/octet-stream": { "schema": { "type": "string", "format": "binary", "maxLength": 4000000 } } } },
+        "responses": {
+          "200": { "description": "Staged replacement output; undetected sensitive data may remain.", "content": { "application/octet-stream": { "schema": { "type": "string", "format": "binary" } }, "text/plain": { "schema": { "type": "string" } }, "text/csv": { "schema": { "type": "string" } }, "application/json": { "schema": {} }, "application/xml": { "schema": { "type": "string" } } } },
+          "413": { "description": "Resource limit exceeded." },
+          "415": { "description": "Unsupported format or feature." },
+          "422": { "description": "Invalid document." },
+          "500": { "description": "Processing failed without exposing document data." }
+        }
+      }
+    }
+  }
+}

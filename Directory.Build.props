@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+	<TargetFramework>net10.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<LangVersion>14.0</LangVersion>
+	<AnalysisLevel>latest</AnalysisLevel>
+	<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<Deterministic>true</Deterministic>
+	<ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+	<IsPackable>false</IsPackable>
+	<Version>0.1.0-alpha.1</Version>
+	<Authors>NuntivusRedact contributors</Authors>
+	<Description>Modular detection and redaction for .NET. Detection is not a guarantee of complete sensitive-data discovery.</Description>
+	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageTags>redaction;privacy;detection</PackageTags>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <EnablePackageValidation>true</EnablePackageValidation>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+	<None Include="$(MSBuildThisFileDirectory)docs/PACKAGE_README.md" Pack="true" PackagePath="/README.md" />
+	  <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

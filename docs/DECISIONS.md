@@ -1,0 +1,62 @@
+# Architecture decisions
+
+## ADR-001: .NET 10 and modular packages — 2026-11-17
+Context: owner requires .NET 10 LTS and third-party extensions.
+Options: monolith vs explicit independent packages.
+Decision: pin installed SDK 10.0.401, target net10.0, use modular SDK projects with central package versions.
+Rationale: small dependency surface and explicit contracts.
+Consequences: consumers need .NET 10; binary formats do not burden text-only users.
+
+## ADR-002: Apache-2.0 — 2026-11-17
+Context: redistribution and future commercial service require a clear license.
+Options: Apache-2.0, MIT, defer distribution.
+Decision: owner explicitly selected Apache-2.0 in this session.
+Rationale: permissive distribution with express patent terms.
+Consequences: include full license; review all additional dependencies separately. No PDF backend license selected yet.
+
+## ADR-003: Preserve original scaffold — 2026-11-17
+Context: repository contains only Class1.cs and the original solution/project, with no Git metadata.
+Options: delete/rename vs retain a nonpackable compatibility project.
+Decision: preserve existing files; original solution will point at implemented modules, original root project excludes recursive new sources and remains unadvertised.
+Consequences: two solution entry points can coexist; the canonical and workspace entry points are now NuntivusRedact.slnx and NuntivusRedact.Workspace.slnx (renamed by ADR-008). No destructive cleanup without approval.
+
+## ADR-004: Fail closed and stage output — 2026-11-17
+Context: partial redaction is dangerous; detector errors may carry source text.
+Options: partial success vs sanitized failure.
+Decision: strict execution only initially; sanitize extension failures without inner exceptions. Bound input and output and fully parse/transform before writing. Unsupported binary formats are rejected by absence of a processor, not treated as text.
+Consequences: non-strict mode is deferred until an explicit incomplete-result contract exists. Byte-format preservation is not promised for structured data. Output stream failure may leave partial bytes; caller must discard destination.
+
+## ADR-005: Shared bounded UTF-8 profile — 2026-11-17
+Context: TXT/CSV/JSON/XML need identical safe stream staging and reporting without duplicating limits.
+Options: new infrastructure package vs reusable base alongside Text.
+Decision: structured format modules depend on Formats.Text's BufferedDocumentProcessor and request-local DocumentProcessingContext; Text depends only on Abstractions. Require empty destinations and explicit registered-format selection, with no binary fallback.
+Rationale: one tested staging boundary without an otherwise empty package.
+Consequences: memory-bounded buffering rather than constant-memory transformation; original formatting/schema/signature preservation is not promised. Reject unsupported XML mixed content and structural matches, JSON collisions and detected non-string primitives. Reports use numeric locations and field-relative UTF-16 offsets.
+
+## ADR-006: Optional HTTP adapter and truthful completion gates — 2026-11-17
+Context: a useful managed-text delivery is possible before secure binary backends exist.
+Options: fake binary shells vs explicitly unsupported formats and independent managed checks.
+Decision: provide optional bounded ASP.NET adapter and four executable samples; split SEC-001 managed checks from unfinished SEC-002 binary/native hardening. Track missing analyzer/policy/validator/OCR interfaces in EXT-001. Keep PKG-001 blocked until actual Git/source provenance is verifiable despite successful local package generation.
+Rationale: independently tested progress without inflating project completion or security claims.
+Consequences: static OpenAPI is kept with the API sample; hosts own authentication/TLS/authorization/concurrency and logging. Office/PDF/images/OCR/worker/benchmark work remains visible and the final release gate remains unpassed. No PDF dependency license or remote repository identity has been invented.
+
+## ADR-007: Separate managed measurements from deferred binary benchmarks — 2026-11-17
+Context: the managed implementation is verified but has no prior throughput/allocation evidence; unsupported binary formats cannot be benchmarked meaningfully.
+Options: synthetic reimplementations, profiler-only observations, or a nonpackable BenchmarkDotNet host invoking actual public product APIs.
+Decision: use centrally pinned BenchmarkDotNet 0.15.8 (MIT, restored metadata reviewed), explicit standalone composition, bounded deterministic synthetic fixtures, MemoryDiagnoser and out-of-process timing. Register host and xUnit fixture-test projects in both solutions before source creation. Keep all development dependencies outside the eleven product packages. Do not copy engine/processor algorithms into benchmarks.
+Rationale: repeatable measurements exercise real detection/overlap/stream/parser/report behavior while excluding reusable setup; correctness preflight and ten xUnit cases guard fixtures. ShortRun is an initial environment-specific baseline, not a regression SLA. No production optimization is made without targeted profiling.
+Consequences: PERF-001 covers executed managed scenarios; PERF-002 explicitly retains deferred Office/PDF/images/OCR measurements until their implementations and recovery checks exist. The full performance milestone and project are not complete. Inherited Visual Studio runtime controls and statistical limits are recorded in PERFORMANCE.md; local hashes are not Source Link provenance. CI runs fixture tests, not noisy timing gates. No publication authorized.
+
+## ADR-008: Owner-approved full NuntivusRedact rename — 2026-11-17
+Context: owner requested a name/namespace change and explicitly selected full scope: namespaces, projects, packages, solutions and docs.
+Options: namespace/API-only changes versus complete brand/identity rename.
+Decision: use NuntivusRedact as brand, root namespace and product package/assembly prefix. Canonical NuntivusRedact.slnx and preserved NuntivusRedact.Workspace.slnx replace the old entry points; root scaffold becomes NuntivusRedact.csproj. Rename branded DI/HTTP APIs while preserving domain names such as RedactionEngine, RedactAsync, strategy Redact methods, markers and /redact routes.
+Rationale: one consistent identity before further implementation; no published packages require compatibility forwarding.
+Consequences: intentional alpha source/package/assembly identity break, documented in MIGRATION.md. Historical benchmark measurements/logs/fingerprints keep their original provenance and are not retimed or relabeled as renamed measurements. Old package candidates are archived outside the current feed. Visual Studio may require reopening the renamed solution to discard cached old project paths. No feature or algorithm changes, publication or security-scope expansion.
+
+## ADR-009: Established format libraries instead of custom syntax implementations — 2026-11-17
+Context: owner requested a review of all format processors and library adoption wherever appropriate.
+Options: retain handwritten CSV parsing/escaping; use CsvHelper; add alternative JSON/XML packages despite existing framework libraries.
+Decision: use centrally pinned CsvHelper 33.1.0 in Formats.Csv only. Keep System.Text.Json, System.Xml/LINQ to XML and .NET UTF-8/stream APIs for JSON, XML and TXT. Reviewed the downloaded CsvHelper nuspec: license expression is MS-PL OR Apache-2.0; select the already approved Apache-2.0 option. Its net9.0/net8.0 dependency groups contain no additional packages. Reviewed parser source at the package-recorded commit 5dad8b8b1d8b074f8353cfd482e939db788a8927.
+Rationale: delegate syntax parsing/escaping to maintained libraries without unnecessary dependencies or changes to public processor contracts. Use explicit invariant-culture comma/RFC configuration, no trimming/comments/blank-line skipping, always-quoted output and staged revalidation. A regression test demonstrated that CsvHelper accepts an unfinished escaped quote at EOF; retain a narrow quote-balance guard over library-parsed raw records to fail closed.
+Consequences: only CSV consumers acquire CsvHelper. Numeric paths, headers-as-data, ragged/blank rows, CR/LF/CRLF input, resource limits, cancellation and sanitized failures remain supported. Twenty new CSV regression cases pass alongside the original suite (105 total tests). Eleven package/symbol pairs and the isolated four-format consumer pass. No binary support or publication; earlier CSV benchmark timings are historical, not measurements of the new library-backed implementation. Revalidate strict-profile tests when changing the dependency version.

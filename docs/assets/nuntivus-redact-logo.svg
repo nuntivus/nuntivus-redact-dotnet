@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="logo-title logo-description">
+  <title id="logo-title">NuntivusRedact logo</title>
+  <desc id="logo-description">A purple document with a blue folded corner and three contrasting redaction bars on a dark rounded tile.</desc>
+  <defs>
+    <linearGradient id="document" x1="60" y1="36" x2="196" y2="224" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6d5dfc"/>
+      <stop offset="1" stop-color="#302388"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="84" y1="92" x2="196" y2="188" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#39c6ff"/>
+      <stop offset="1" stop-color="#008cff"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="254" height="254" rx="56" fill="#0d1117" stroke="#303847" stroke-width="2"/>
+  <path d="M80 34H150L196 80V202A20 20 0 0 1 176 222H80A20 20 0 0 1 60 202V54A20 20 0 0 1 80 34Z" fill="url(#document)"/>
+  <path d="M150 34V66A14 14 0 0 0 164 80H196Z" fill="url(#accent)"/>
+  <rect x="84" y="100" width="88" height="10" rx="5" fill="#e6edf3"/>
+  <rect x="78" y="126" width="102" height="22" rx="7" fill="#0d1117"/>
+  <rect x="84" y="133" width="44" height="8" rx="4" fill="url(#accent)"/>
+  <rect x="78" y="160" width="80" height="22" rx="7" fill="#0d1117"/>
+  <rect x="84" y="167" width="62" height="8" rx="4" fill="url(#accent)"/>
+  <rect x="84" y="196" width="50" height="6" rx="3" fill="#c9c4ff"/>
+</svg>

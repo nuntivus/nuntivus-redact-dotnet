@@ -1,0 +1,31 @@
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using NuntivusRedact;
+using NuntivusRedact.AspNetCore;
+using NuntivusRedact.Core;
+using NuntivusRedact.Detectors.PersonalData;
+using NuntivusRedact.Extensions.DependencyInjection;
+using NuntivusRedact.Formats.Csv;
+using NuntivusRedact.Formats.Json;
+using NuntivusRedact.Formats.Text;
+using NuntivusRedact.Formats.Xml;
+using NuntivusRedact.Strategies;
+
+var services = new ServiceCollection();
+services.AddNuntivusRedact(new RedactionPolicyBuilder(new FixedReplacementStrategy()).Build())
+    .AddDocumentProcessor<TextDocumentProcessor>().AddDocumentProcessor<JsonDocumentProcessor>()
+    .AddDocumentProcessor<CsvDocumentProcessor>().AddDocumentProcessor<XmlDocumentProcessor>();
+services.AddSingleton(PersonalDataDetectors.Email());
+services.AddNuntivusRedactHttp();
+using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
+foreach (var processor in provider.GetServices<IDocumentProcessor>())
+{
+    string source = processor.Format switch { "json" => "{\"email\":\"alice@example.com\"}", "xml" => "<email>alice@example.com</email>", _ => "alice@example.com" };
+    using var input = new MemoryStream(Encoding.UTF8.GetBytes(source));
+    using var output = new MemoryStream();
+    var result = await processor.ProcessAsync(input, output);
+    if (result.Detections.Count != 1 || Encoding.UTF8.GetString(output.ToArray()).Contains("alice@example.com", StringComparison.Ordinal))
+        throw new InvalidOperationException("Package consumer verification failed.");
+}
+_ = provider.GetRequiredService<NuntivusRedactHttpHandler>();
+Console.WriteLine("Package-only consumer passed all four formats and HTTP service resolution.");

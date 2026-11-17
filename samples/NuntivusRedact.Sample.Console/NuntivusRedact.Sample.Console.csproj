@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><GenerateDocumentationFile>false</GenerateDocumentationFile></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/NuntivusRedact.Core/NuntivusRedact.Core.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+  </ItemGroup>
+</Project>

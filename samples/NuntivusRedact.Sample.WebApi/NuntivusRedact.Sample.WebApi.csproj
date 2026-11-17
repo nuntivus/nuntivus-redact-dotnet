@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup><GenerateDocumentationFile>false</GenerateDocumentationFile></PropertyGroup>
+  <ItemGroup><Content Update="openapi.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/NuntivusRedact.AspNetCore/NuntivusRedact.AspNetCore.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Csv/NuntivusRedact.Formats.Csv.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Xml/NuntivusRedact.Formats.Xml.csproj" />
+  </ItemGroup>
+</Project>

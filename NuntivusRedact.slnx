@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/NuntivusRedact.Benchmarks/NuntivusRedact.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/NuntivusRedact.Sample.Console/NuntivusRedact.Sample.Console.csproj" />
+    <Project Path="samples/NuntivusRedact.Sample.CustomDetector/NuntivusRedact.Sample.CustomDetector.csproj" />
+    <Project Path="samples/NuntivusRedact.Sample.DependencyInjection/NuntivusRedact.Sample.DependencyInjection.csproj" />
+    <Project Path="samples/NuntivusRedact.Sample.WebApi/NuntivusRedact.Sample.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/NuntivusRedact.Abstractions/NuntivusRedact.Abstractions.csproj" />
+    <Project Path="src/NuntivusRedact.AspNetCore/NuntivusRedact.AspNetCore.csproj" />
+    <Project Path="src/NuntivusRedact.Core/NuntivusRedact.Core.csproj" />
+    <Project Path="src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
+    <Project Path="src/NuntivusRedact.Detectors.Regex/NuntivusRedact.Detectors.Regex.csproj" />
+    <Project Path="src/NuntivusRedact.Extensions.DependencyInjection/NuntivusRedact.Extensions.DependencyInjection.csproj" />
+    <Project Path="src/NuntivusRedact.Formats.Csv/NuntivusRedact.Formats.Csv.csproj" />
+    <Project Path="src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+    <Project Path="src/NuntivusRedact.Formats.Text/NuntivusRedact.Formats.Text.csproj" />
+    <Project Path="src/NuntivusRedact.Formats.Xml/NuntivusRedact.Formats.Xml.csproj" />
+    <Project Path="src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NuntivusRedact.Architecture.Tests/NuntivusRedact.Architecture.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Benchmarks.Tests/NuntivusRedact.Benchmarks.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Core.Tests/NuntivusRedact.Core.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Detectors.Tests/NuntivusRedact.Detectors.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Formats.Tests/NuntivusRedact.Formats.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Integration.Tests/NuntivusRedact.Integration.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Security.Tests/NuntivusRedact.Security.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Strategies.Tests/NuntivusRedact.Strategies.Tests.csproj" />
+  </Folder>
+</Solution>

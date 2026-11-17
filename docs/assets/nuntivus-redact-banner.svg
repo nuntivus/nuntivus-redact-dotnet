@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="480" viewBox="0 0 1280 480" role="img" aria-labelledby="banner-title banner-description">
+  <title id="banner-title">NuntivusRedact — detection and redaction for .NET</title>
+  <desc id="banner-description">An original purple document and blue redaction mark beside the NuntivusRedact name. Modular .NET libraries for text, CSV, JSON and XML. Dark background with purple and blue accents.</desc>
+  <defs>
+    <linearGradient id="document" x1="60" y1="36" x2="196" y2="224" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6d5dfc"/>
+      <stop offset="1" stop-color="#302388"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="84" y1="92" x2="196" y2="188" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#39c6ff"/>
+      <stop offset="1" stop-color="#008cff"/>
+    </linearGradient>
+    <linearGradient id="rule" x1="64" y1="0" x2="1216" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6d5dfc"/>
+      <stop offset="1" stop-color="#008cff"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#372c84" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#0d1117" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="1" y="1" width="1278" height="478" rx="28" fill="#0d1117" stroke="#303847" stroke-width="2"/>
+  <ellipse cx="224" cy="200" rx="380" ry="260" fill="url(#glow)"/>
+  <path d="M944 40H1120M1008 64H1200M1080 88H1168" fill="none" stroke="#212a3c" stroke-width="8" stroke-linecap="round"/>
+  <g transform="translate(64 100)">
+    <rect x="1" y="1" width="254" height="254" rx="56" fill="#0d1117" stroke="#303847" stroke-width="2"/>
+    <path d="M80 34H150L196 80V202A20 20 0 0 1 176 222H80A20 20 0 0 1 60 202V54A20 20 0 0 1 80 34Z" fill="url(#document)"/>
+    <path d="M150 34V66A14 14 0 0 0 164 80H196Z" fill="url(#accent)"/>
+    <rect x="84" y="100" width="88" height="10" rx="5" fill="#e6edf3"/>
+    <rect x="78" y="126" width="102" height="22" rx="7" fill="#0d1117"/>
+    <rect x="84" y="133" width="44" height="8" rx="4" fill="url(#accent)"/>
+    <rect x="78" y="160" width="80" height="22" rx="7" fill="#0d1117"/>
+    <rect x="84" y="167" width="62" height="8" rx="4" fill="url(#accent)"/>
+    <rect x="84" y="196" width="50" height="6" rx="3" fill="#c9c4ff"/>
+  </g>
+  <g font-family="Segoe UI, Inter, Arial, sans-serif">
+    <text x="364" y="133" fill="#a99cff" font-size="17" font-weight="600" letter-spacing="3">MODULAR LIBRARIES · .NET 10</text>
+    <text x="360" y="221" fill="#f0f6fc" font-size="72" font-weight="700" letter-spacing="-2">Nuntivus<tspan fill="#39baff">Redact</tspan></text>
+    <text x="364" y="277" fill="#c9d1d9" font-size="29">Detection &amp; redaction for .NET applications.</text>
+    <g font-size="15" font-weight="600" text-anchor="middle">
+      <rect x="364" y="308" width="82" height="34" rx="17" fill="#1c2036" stroke="#5145a6"/>
+      <text x="405" y="330" fill="#d5ccff">TEXT</text>
+      <rect x="458" y="308" width="72" height="34" rx="17" fill="#1c2036" stroke="#5145a6"/>
+      <text x="494" y="330" fill="#d5ccff">CSV</text>
+      <rect x="542" y="308" width="82" height="34" rx="17" fill="#10273c" stroke="#225e8c"/>
+      <text x="583" y="330" fill="#8ed8ff">JSON</text>
+      <rect x="636" y="308" width="76" height="34" rx="17" fill="#10273c" stroke="#225e8c"/>
+      <text x="674" y="330" fill="#8ed8ff">XML</text>
+    </g>
+    <text x="64" y="427" fill="#9daab9" font-size="17">Explicit composition. Bounded processing. Extensible by design.</text>
+    <text x="1216" y="427" fill="#9daab9" font-size="15" text-anchor="end">OPEN SOURCE · APACHE-2.0</text>
+  </g>
+  <path d="M64 381H1216" fill="none" stroke="url(#rule)" stroke-width="2"/>
+</svg>

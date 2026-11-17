@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsTestProject>true</IsTestProject><GenerateDocumentationFile>false</GenerateDocumentationFile></PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../src/NuntivusRedact.AspNetCore/NuntivusRedact.AspNetCore.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../../src/NuntivusRedact.Extensions.DependencyInjection/NuntivusRedact.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Text/NuntivusRedact.Formats.Text.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
+  </ItemGroup>
+</Project>

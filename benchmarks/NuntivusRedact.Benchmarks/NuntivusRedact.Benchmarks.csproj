@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+    <ProjectReference Include="../../src/NuntivusRedact.Core/NuntivusRedact.Core.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Detectors.Regex/NuntivusRedact.Detectors.Regex.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Text/NuntivusRedact.Formats.Text.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Xml/NuntivusRedact.Formats.Xml.csproj" />
+  </ItemGroup>
+</Project>
