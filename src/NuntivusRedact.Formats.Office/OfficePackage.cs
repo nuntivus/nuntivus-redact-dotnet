@@ -4,10 +4,11 @@ using System.Xml.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Validation;
+using NuntivusRedact.Ocr;
 
 namespace NuntivusRedact.Formats.Office;
 
-internal enum OfficeKind { Word, Workbook, Worksheet, SharedStrings, ExcelStyles, ExcelComments, CalculationChain, Theme, Properties, EmbeddedWord, EmbeddedExcel }
+internal enum OfficeKind { Word, Workbook, Worksheet, SharedStrings, ExcelStyles, ExcelComments, CalculationChain, Theme, Properties, EmbeddedWord, EmbeddedExcel, Image, Drawing }
 
 internal sealed class OfficePart(string name, string contentType, OfficeKind kind, byte[] bytes, XDocument? xml)
 {
@@ -19,11 +20,14 @@ internal sealed class OfficePart(string name, string contentType, OfficeKind kin
     internal bool Removed { get; set; }
 }
 
-internal sealed class OfficePackage(IOfficeContent content, IOfficeString strings) : IOfficePackage
+internal sealed class OfficePackage(IOfficeContent content, IOfficeString strings, IImageRedactor? images = null) : IOfficePackage
 {
     internal const string WordNamespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
     internal const string ExcelNamespace = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
     internal const string DrawingNamespace = "http://schemas.openxmlformats.org/drawingml/2006/main";
+    internal const string WordDrawingNamespace = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing";
+    internal const string ExcelDrawingNamespace = "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing";
+    internal const string PictureNamespace = "http://schemas.openxmlformats.org/drawingml/2006/picture";
     internal const string RelationshipNamespace = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
     private readonly XNamespace Types = "http://schemas.openxmlformats.org/package/2006/content-types";
     private readonly XNamespace Relationships = "http://schemas.openxmlformats.org/package/2006/relationships";
@@ -41,7 +45,7 @@ internal sealed class OfficePackage(IOfficeContent content, IOfficeString string
         {
             using var source = new OfficeBuffer(limits.MaximumInputBytes);
             await input.CopyToAsync(source, token).ConfigureAwait(false);
-            var context = new OfficeContext(redactor, limits, token, strings);
+            var context = new OfficeContext(redactor, limits, token, strings, images is not null);
             var result = await TransformAsync(source.ToArray(), format, context, "/packages/0", 0).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             await output.WriteAsync(result, token).ConfigureAwait(false);
@@ -83,6 +87,24 @@ internal sealed class OfficePackage(IOfficeContent content, IOfficeString string
             if (part.Kind is OfficeKind.EmbeddedWord or OfficeKind.EmbeddedExcel)
             {
                 part.Bytes = await TransformAsync(part.Bytes, part.Kind == OfficeKind.EmbeddedWord ? "docx" : "xlsx", context, path + "/packages/0", depth + 1).ConfigureAwait(false);
+            }
+            else if (part.Kind == OfficeKind.Image)
+            {
+                context.BeginImage();
+                ImageRedactionResult image;
+                try
+                {
+                    image = await images!.RedactAsync(part.Bytes, part.ContentType, context.Redactor,
+                        context.Limits.MaximumImagePixels - context.ImagePixels, context.Token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (context.Token.IsCancellationRequested) { throw; }
+                catch (RedactionException error) { throw new RedactionException(error.Error); }
+                catch (Exception) { throw new RedactionException(RedactionError.ExtensionFailed); }
+                context.CompleteImage(image, path + "/image/0");
+                part.Bytes = image.Png.ToArray();
+                var declaration = contentTypes.Root!.Elements(Types + "Override").SingleOrDefault(e => (string?)e.Attribute("PartName") == "/" + part.Name);
+                if (declaration is null) contentTypes.Root.Add(new XElement(Types + "Override", new XAttribute("PartName", "/" + part.Name), new XAttribute("ContentType", "image/png")));
+                else declaration.SetAttributeValue("ContentType", "image/png");
             }
             else await content.TransformAsync(part, context, path).ConfigureAwait(false);
         }
@@ -193,7 +215,7 @@ internal sealed class OfficePackage(IOfficeContent content, IOfficeString string
                 continue;
             }
             var kind = KnownKind(type) ?? throw Unsupported();
-            var xml = kind is OfficeKind.EmbeddedWord or OfficeKind.EmbeddedExcel ? null : context.Parse(data);
+            var xml = kind is OfficeKind.EmbeddedWord or OfficeKind.EmbeddedExcel or OfficeKind.Image ? null : context.Parse(data);
             result.Add(name, new OfficePart(name, type, kind, data, xml));
         }
         return result;
@@ -217,6 +239,8 @@ internal sealed class OfficePackage(IOfficeContent content, IOfficeString string
         "application/vnd.openxmlformats-package.core-properties+xml" or Prefix + "extended-properties+xml" or Prefix + "custom-properties+xml" => OfficeKind.Properties,
         Prefix + "wordprocessingml.document" => OfficeKind.EmbeddedWord,
         Prefix + "spreadsheetml.sheet" => OfficeKind.EmbeddedExcel,
+        "image/png" or "image/jpeg" when images is not null => OfficeKind.Image,
+        Prefix + "drawing+xml" when images is not null => OfficeKind.Drawing,
         _ => null
     };
 
@@ -243,6 +267,8 @@ internal sealed class OfficePackage(IOfficeContent content, IOfficeString string
                 if (!parts.TryGetValue(target, out var part)) throw Invalid();
                 var type = Required(rel, "Type");
                 if (!AllowedRelationship(type, part)) throw Unsupported();
+                if (type == RelationshipNamespace + "/image" && (source.Length == 0 || parts[source].Kind is not OfficeKind.Word and not OfficeKind.Drawing)) throw Unsupported();
+                if (type == RelationshipNamespace + "/drawing" && (source.Length == 0 || parts[source].Kind != OfficeKind.Worksheet)) throw Unsupported();
                 if (type == RelationshipNamespace + "/officeDocument")
                 {
                     if (source.Length != 0 || ++mainCount != 1 || part.ContentType != Prefix + (format == "docx" ? "wordprocessingml.document.main+xml" : "spreadsheetml.sheet.main+xml")) throw Invalid();
@@ -252,6 +278,7 @@ internal sealed class OfficePackage(IOfficeContent content, IOfficeString string
             graph.Add(source, edges);
         }
         if (mainCount != 1) throw Invalid();
+        ValidatePictureReferences(parts, documents);
         var visited = new HashSet<string>(StringComparer.Ordinal);
         var queue = new Queue<string>();
         queue.Enqueue("");
@@ -282,8 +309,25 @@ internal sealed class OfficePackage(IOfficeContent content, IOfficeString string
             "extended-properties" => target.ContentType == Prefix + "extended-properties+xml",
             "custom-properties" => target.ContentType == Prefix + "custom-properties+xml",
             "package" => target.Kind is OfficeKind.EmbeddedWord or OfficeKind.EmbeddedExcel,
+            "image" => images is not null && target.Kind == OfficeKind.Image,
+            "drawing" => images is not null && target.Kind == OfficeKind.Drawing,
             _ => false
         };
+    }
+
+    private void ValidatePictureReferences(Dictionary<string, OfficePart> parts, Dictionary<string, XDocument> documents)
+    {
+        foreach (var part in parts.Values.Where(p => p.Xml is not null))
+        {
+            var rels = documents.FirstOrDefault(d => RelationshipSource(d.Key) == part.Name).Value;
+            foreach (var element in part.Xml!.Descendants().Where(e => e.Name == XName.Get("blip", DrawingNamespace) || e.Name == XName.Get("drawing", ExcelNamespace)))
+            {
+                bool image = element.Name.LocalName == "blip";
+                var id = (string?)element.Attribute(XName.Get(image ? "embed" : "id", RelationshipNamespace));
+                var rel = rels?.Root?.Elements().SingleOrDefault(e => (string?)e.Attribute("Id") == id);
+                if (id is null || rel is null || (string?)rel.Attribute("Type") != RelationshipNamespace + (image ? "/image" : "/drawing")) throw Invalid();
+            }
+        }
     }
 
     private void ValidateSharedStrings(Dictionary<string, OfficePart> parts)

@@ -3,7 +3,7 @@ $root = Resolve-Path (Join-Path $PSScriptRoot '../..')
 $feed = Join-Path $root 'artifacts/packages'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $packages = @(Get-ChildItem $feed -Filter '*.nupkg')
-if ($packages.Count -ne 12) { throw "Expected 12 candidate packages, found $($packages.Count). Reconcile implemented projects." }
+if ($packages.Count -ne 15) { throw "Expected 15 candidate packages, found $($packages.Count). Reconcile implemented projects." }
 foreach ($package in $packages) {
     if ($package.Name -notlike 'NuntivusRedact.*.nupkg') { throw "Unexpected package identity: $($package.Name)" }
     $zip = [IO.Compression.ZipFile]::OpenRead($package.FullName)

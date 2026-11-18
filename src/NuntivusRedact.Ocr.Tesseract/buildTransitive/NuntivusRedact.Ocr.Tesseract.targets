@@ -1,0 +1,27 @@
+<Project>
+  <Target Name="NuntivusRedactCopyTesseractNativeAssets" BeforeTargets="GetCopyToOutputDirectoryItems;GetCopyToPublishDirectoryItems" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <_NuntivusRedactTesseractAssembly Include="@(ReferenceCopyLocalPaths)" Condition="'%(Filename)' == 'Tesseract'" />
+      <ContentWithTargetPath Include="@(_NuntivusRedactTesseractAssembly->'%(RootDir)%(Directory)../../x64/tesseract50.dll')">
+        <TargetPath>x64/tesseract50.dll</TargetPath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ContentWithTargetPath>
+      <ContentWithTargetPath Include="@(_NuntivusRedactTesseractAssembly->'%(RootDir)%(Directory)../../x64/leptonica-1.82.0.dll')">
+        <TargetPath>x64/leptonica-1.82.0.dll</TargetPath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ContentWithTargetPath>
+      <ContentWithTargetPath Include="@(_NuntivusRedactTesseractAssembly->'%(RootDir)%(Directory)../../x86/tesseract50.dll')">
+        <TargetPath>x86/tesseract50.dll</TargetPath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ContentWithTargetPath>
+      <ContentWithTargetPath Include="@(_NuntivusRedactTesseractAssembly->'%(RootDir)%(Directory)../../x86/leptonica-1.82.0.dll')">
+        <TargetPath>x86/leptonica-1.82.0.dll</TargetPath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ContentWithTargetPath>
+    </ItemGroup>
+  </Target>
+</Project>

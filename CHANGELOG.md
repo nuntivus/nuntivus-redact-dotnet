@@ -2,6 +2,8 @@
 
 ## 0.1.0-alpha.1 — Unreleased
 
+- Optional provider-neutral OCR contracts, .NET Tesseract adapter and bounded SkiaSharp PNG/JPEG pixel redaction. Opt-in DOCX/XLSX picture handling rebuilds image payloads as metadata-free PNG and redacts alternative text; existing constructors retain image rejection. Native processing is in-process, not sandboxed; OCR accuracy and complete discovery are not guaranteed. See docs/formats/ocr.md.
+
 - Restricted DOCX/XLSX Office package using centrally pinned MIT Open XML SDK 3.5.1: original-coordinate run edits, preserved unaffected formatting, properties/hidden-sheet recovery, bounded archive/XML/relationship validation, recursive supported package relationships and staged fresh output.
 - Additive IEditAwareTextRedactor/RedactionEdit/EditRedactionResult contracts; Core executes detection/strategies once and optional DI shares the engine instance. Existing ITextRedactor/RedactionResult remain source-compatible.
 - Restricted XLSX local-A1 arithmetic/function formulas preserved without cached values/calculation chains; full recalculation requested, not performed. Revisions, drawings/images, OLE, unknown/external/active/encrypted/signed content and other formulas fail closed. SDK/LibreOffice checks do not establish Microsoft Office or human visual fidelity.
@@ -18,4 +20,4 @@
 - Optional Microsoft DI, bounded UTF-8 TXT/CSV/JSON/XML profile and numeric source-free reports.
 - Optional bounded ASP.NET raw-body integration with sanitized errors and a local OpenAPI sample; no production service claim.
 - xUnit checks, executable synthetic samples, verification scripts and CI.
-- PPTX/PDF/images/OCR and broader Office features are unsupported. See the [backlog](docs/TASKS.md) for unfinished milestones. No NuGet publication performed.
+- PPTX/PDF, broader Office features and native-worker isolation remain unsupported. See the [backlog](docs/TASKS.md) for unfinished milestones. No NuGet publication performed.

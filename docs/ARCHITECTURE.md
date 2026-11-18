@@ -6,7 +6,7 @@ Text offsets use UTF-16 code units within the supplied text. Detections carry ca
 
 Security boundary: successful text replacement means only accepted detector matches were replaced. It is not proof of anonymization or complete discovery. Structured parsers preserve semantic structure, not original byte formatting. Binary processors are unsupported until their hidden-content and recovery surfaces are verified. No plugin discovery by reflection. No logging of source content. Custom extensions are trusted application code and must follow the same contracts.
 
-Planned package boundaries mirror the master roadmap. Office, PDF, Images, OCR, ASP.NET and benchmark projects must not be added as empty shells. Document deferrals in TASKS.md and RESUME.md.
+Package boundaries mirror the master roadmap. New projects must provide meaningful functionality, not empty shells. PDF/PPTX and native-isolation deferrals remain explicit in TASKS.md and RESUME.md.
 
 ## Implemented format and HTTP boundaries
 
@@ -16,7 +16,7 @@ Format syntax is delegated to established libraries: CsvHelper in Formats.Csv on
 
 Extensions.DependencyInjection depends on Core and Microsoft.Extensions.Options/DependencyInjection only. It explicitly composes singleton extensions, validates required policy, and preserves Core's standalone path. Host container scope validation is required for captive dependencies. AspNetCore depends on DI/Text and the shared framework; it bounds/stages raw-body requests/responses and returns safe problem codes. Hosts own authentication, TLS, authorization, logging configuration and concurrency controls. The sample disables logging and includes static OpenAPI metadata; no production service or isolated worker is implied.
 
-Supported format profiles and remaining binary package deferrals are in formats/README.md. Separate analyzer/policy/validation/OCR contracts remain EXT-001; do not infer them from the implemented detector/strategy/document interfaces.
+Supported format profiles and remaining binary package deferrals are in formats/README.md. Separate analyzer/policy/validation contracts remain EXT-001; neutral OCR contracts now exist in Ocr.Abstractions.
 
 ## Restricted Office boundary
 
@@ -25,4 +25,10 @@ Office helpers are instance services behind internal IOfficePackage, IOfficeCont
 
 IEditAwareTextRedactor is an additive optional capability; ITextRedactor and RedactionResult are unchanged. Core's existing single detection/policy/strategy pass emits ordered original-coordinate RedactionEdit values and final text. Adapters validate edit reconstruction before mapping to runs, preserving unaffected properties and assigning replacement text to the first affected run. Replacement-bearing results are sensitive classes, not source-free reports. DI exposes the same engine under both interfaces; an incompatible custom legacy redactor is never silently replaced. Office registration remains explicit and the HTTP sample does not automatically enable binary formats.
 
-See formats/office.md and ADR-010 for feature rejections, formula/cache semantics, resource defaults and fidelity limits. PPTX, broad Office feature support, PDF/OCR/native isolation and binary benchmarks remain deferred.
+See formats/office.md and ADR-010 for feature rejections, formula/cache semantics, resource defaults and fidelity limits. PPTX, broad Office feature support, PDF, native isolation and binary benchmarks remain deferred.
+
+## Optional OCR and picture boundary
+
+Ocr.Abstractions depends only on Abstractions. Formats.Images and Ocr.Tesseract depend inward on those contracts, never Office or Core. IOcrProvider receives canonical PNG and returns sensitive text with ordered UTF-16 word spans and original-pixel rectangles. RasterImageRedactor validates coverage/geometry/edits, flattens alpha, replaces complete matched words with opaque pixels and encodes metadata-free PNG. SkiaSharp and Tesseract remain isolated to their own optional modules.
+
+Office's additive constructor accepts IImageRedactor; unchanged constructors reject images. OfficeDrawing implements IOfficeDrawing for restricted picture-only DrawingML and alternative text; it does not enable arbitrary shapes/charts/VML. Image parts and nested packages share aggregate image count, decoded pixel and detection budgets. PNG output updates content-type overrides without changing relationship targets. All output remains staged and SDK-validated. In-process native execution is explicitly not sandboxed and cannot guarantee hard cancellation. See formats/ocr.md and ADR-011.

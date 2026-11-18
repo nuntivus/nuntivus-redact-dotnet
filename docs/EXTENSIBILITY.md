@@ -24,6 +24,8 @@ Formatting-preserving adapters can consume IEditAwareTextRedactor.RedactWithEdit
 
 ## Optional DI
 
+OCR is independently replaceable through `IOcrProvider`; `RasterImageRedactor` consumes it, while Office consumes only `IImageRedactor`. Construct these explicitly and use the additional Office constructor to opt into images. Existing constructors keep image rejection. See [OCR/images](formats/ocr.md) for the complete extension contract and lifetime/native-security rules.
+
 The executable sample is samples/NuntivusRedact.Sample.DependencyInjection/Program.cs. Call services.AddNuntivusRedact(policy), then AddDetector<T>(), AddStrategy<T>() and AddDocumentProcessor<T>() as needed. Nothing is auto-discovered. NuntivusRedactOptions.Policy is required when using the options callback overload. The engine is singleton and options are snapshotted at first resolution; runtime reconfiguration is not supported. Strategies in a policy are explicit instances; AddStrategy registers optional extensions but does not silently select a default.
 
 All registered extensions must be singleton/thread safe. Direct non-singleton registrations are rejected when the engine resolves. BuildServiceProvider with ValidateScopes=true and ValidateOnBuild=true checks captive scoped dependencies. Do not mutate IServiceCollection after building the provider. Do not resolve scoped services from extension factories. Use IOptions only at the configuration boundary, not as mutable runtime state in Core.

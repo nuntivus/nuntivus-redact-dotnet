@@ -79,8 +79,9 @@ See [Getting started](docs/GETTING_STARTED.md) for local NuGet feeds, structured
 | CSV | Comma-separated, doubled quotes, quoted multiline cells, headers treated as data | No dialect guessing or spreadsheet-formula sanitization; ragged/blank rows preserved |
 | JSON | Decoded string keys/values with primitive types preserved | Duplicate/colliding keys and detections in non-string primitives fail closed |
 | XML | Leaf text/CDATA, ordinary attributes and comments | DTDs, processing instructions, mixed content and detected structural identifiers are rejected |
-| DOCX / XLSX | Restricted Open XML profile with unaffected formatting preserved | Reject revisions, drawings/images, OLE, external/active/signed/unknown content; restricted XLSX formulas, no calculation engine; see [Office](docs/formats/office.md) |
-| PPTX / PDF / images / OCR | **Unsupported** | Planned work is not a support claim |
+| DOCX / XLSX | Restricted Open XML profile with unaffected formatting preserved | Reject revisions, OLE, external/active/signed/unknown content; pictures are opt-in only; restricted XLSX formulas, no calculation engine; see [Office](docs/formats/office.md) |
+| PNG / JPEG / OCR | Optional bounded raster API and embedded Office pictures | Replaceable provider, permanent matched-word pixels, metadata-free PNG; native execution is not isolated; see [OCR/images](docs/formats/ocr.md) |
+| PPTX / PDF | **Unsupported** | Planned work is not a support claim |
 
 Structured-text defaults are 4 MB input, 8 MB output, depth 64, 10,000 inspected fields/nodes and 10,000 accepted detections; individual text-engine limits also apply. Office uses separate [binary limits](docs/formats/office.md). Processing buffers bounded data in memory—it is not constant-memory streaming. Invalid UTF-8, malformed input, unsupported features and exceeded limits fail closed. Read the [complete format/security profile](docs/formats/structured.md) before integrating.
 
@@ -88,7 +89,7 @@ Input/output streams remain caller-owned; destinations must start empty. **Disca
 
 ## Packages and architecture
 
-Twelve independent product packages can be built locally. Install only the modules needed by the application; there is no all-in-one published package.
+Fifteen independent product packages can be built locally. Install only the modules needed by the application; there is no all-in-one published package.
 
 | Package | Responsibility |
 | --- | --- |
@@ -102,6 +103,9 @@ Twelve independent product packages can be built locally. Install only the modul
 | [NuntivusRedact.Formats.Json](src/NuntivusRedact.Formats.Json) | System.Text.Json-based processing |
 | [NuntivusRedact.Formats.Xml](src/NuntivusRedact.Formats.Xml) | Hardened System.Xml/LINQ to XML processing |
 | [NuntivusRedact.Formats.Office](src/NuntivusRedact.Formats.Office) | Restricted DOCX/XLSX using MIT Open XML SDK; separate binary limits and edit-aware redactor |
+| [NuntivusRedact.Ocr.Abstractions](src/NuntivusRedact.Ocr.Abstractions) | Replaceable OCR/image contracts without native dependencies |
+| [NuntivusRedact.Ocr.Tesseract](src/NuntivusRedact.Ocr.Tesseract) | Optional .NET Tesseract adapter; host-supplied language data |
+| [NuntivusRedact.Formats.Images](src/NuntivusRedact.Formats.Images) | Bounded PNG/JPEG pixel redaction and opt-in Office pictures; see [OCR/images](docs/formats/ocr.md) |
 | [NuntivusRedact.Extensions.DependencyInjection](src/NuntivusRedact.Extensions.DependencyInjection) | Optional explicit DI registration |
 | [NuntivusRedact.AspNetCore](src/NuntivusRedact.AspNetCore) | Optional bounded raw-body HTTP adapter |
 
@@ -129,7 +133,7 @@ pwsh -File ./tools/verification/docs-check.ps1
 pwsh -File ./tools/verification/package-smoke.ps1
 ```
 
-The verification script restores, builds Release, runs xUnit tests and creates `.nupkg`/`.snupkg` candidates under `artifacts/packages`. Package smoke inspects all twelve package/symbol pairs and runs an isolated six-format consumer. The intentionally nonpackable Web API sample can emit a pack warning. POSIX users can run `sh tools/verification/verify.sh`; the package/documentation scripts use PowerShell 7.
+The verification script restores, builds Release, runs xUnit tests and creates `.nupkg`/`.snupkg` candidates under `artifacts/packages`. Package smoke inspects all fifteen package/symbol pairs and runs an isolated six-format consumer. Windows x64 additionally runs `tools/verification/ocr-smoke.ps1` for native OCR and Office picture recovery using pinned test language data. The intentionally nonpackable Web API sample can emit a pack warning. POSIX users can run `sh tools/verification/verify.sh`; the package/documentation scripts use PowerShell 7.
 
 CI is configured for Windows/Linux. The manual [package-preparation workflow](.github/workflows/release.yml) uploads candidate artifacts only; **no publishing or deployment occurs**. Workflow badges reflect hosted runs only after repository setup. Local executed results, known blockers and historical evidence are in [Progress](docs/PROGRESS.md).
 
@@ -144,7 +148,7 @@ CI is configured for Windows/Linux. The manual [package-preparation workflow](.g
 
 ## Roadmap and maturity
 
-The managed-text and restricted DOCX/XLSX profiles are implemented and locally tested, but the **full roadmap is incomplete**. PPTX, broader Office fidelity/embedded-object support, PDF/OCR, remaining binary recovery/native isolation, extension contracts, binary performance and final release gates remain unfinished. Microsoft Office application/visual fidelity is not verified; see [evidence](docs/PROGRESS.md). Repository/Source Link provenance still needs release validation.
+The managed-text, restricted DOCX/XLSX and optional [OCR/picture profiles](docs/formats/ocr.md) are implemented, but the **full roadmap is incomplete**. PPTX, broader Office fidelity/embedded-object support, PDF, remaining binary recovery/native isolation, extension contracts, binary performance and final release gates remain unfinished. Native OCR is in-process, not sandboxed, and can miss sensitive text. Microsoft Office application/visual fidelity is not verified; see [evidence](docs/PROGRESS.md). Repository/Source Link provenance still needs release validation.
 
 [Historical managed benchmarks](docs/PERFORMANCE.md) are environment-specific measurements, not general throughput or current-version guarantees. They predate the CSV backend change; no new timings are claimed. A badge, sample HTTP response or detector match is not a security certification or proof of anonymization.
 

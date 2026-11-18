@@ -9,5 +9,7 @@
     <ProjectReference Include="../../src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Images/NuntivusRedact.Formats.Images.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Ocr.Tesseract/NuntivusRedact.Ocr.Tesseract.csproj" />
   </ItemGroup>
 </Project>

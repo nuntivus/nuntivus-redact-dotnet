@@ -122,4 +122,6 @@ Visit `http://127.0.0.1:5187/openapi/v1.json`. The [HTTP guide](HTTP.md) describ
 
 For DOCX/XLSX, reference NuntivusRedact.Formats.Office and follow the [Office support matrix and registration example](formats/office.md). The executable DI sample processes both formats with synthetic data. Office has independent binary budgets and requires the optional edit-aware capability implemented by Core; it does not use the UTF-8 processor base. The HTTP sample still enables only its four text formats.
 
-Successful replacement does not prove complete sensitive-data discovery or anonymization. Masking and keyed pseudonymization are not equivalent to irreversible anonymization. PPTX/PDF/images/OCR remain unsupported.
+For optional PNG/JPEG pixel redaction and embedded Office pictures, compose the separate image module with a replaceable OCR provider; see [OCR/images](formats/ocr.md). The Tesseract adapter uses trusted host-supplied language files and in-process native libraries, not a sandbox. Existing Office constructors still reject images.
+
+Successful replacement does not prove complete sensitive-data discovery or anonymization. Masking and keyed pseudonymization are not equivalent to irreversible anonymization. PPTX/PDF and native-worker isolation remain unsupported.

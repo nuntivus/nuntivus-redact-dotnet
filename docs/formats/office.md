@@ -16,18 +16,19 @@ This is a strict Transitional OOXML (2006 namespaces) profile. Strict OOXML name
 | DOCX hidden runs | Process regardless of visibility. |
 | DOCX tracked insertions/deletions/moves | Reject: current/historical projections need separate verified mapping; neither is silently retained as securely processed. |
 | DOCX styles, numbering, page/section layout | Preserve supported typed XML; reject detected sensitive structural values rather than changing semantics. |
-| DOCX fields, data bindings, altChunk, custom XML, drawings, text boxes, SmartArt | Reject in this profile. These can carry alternate, cached, linked or image content. |
+| DOCX fields, data bindings, altChunk, custom XML, text boxes, SmartArt | Reject in this profile. Restricted picture-only DrawingML is opt-in; see [OCR/images](ocr.md). |
 | XLSX shared strings, inline strings, rich text | Decode ST_Xstring `_xNNNN_` escapes once before detection, including unused strings; re-encode literal escape syntax and retain unaffected run properties. Logical strings are limited to 32,767 UTF-16 code units. |
 | XLSX visible, hidden and very-hidden worksheets | Process all parts; visibility does not bypass redaction. |
 | XLSX numeric, date, boolean, error cells | Preserve unchanged with supported built-in formats; reject detected sensitive values when replacement would change type. Custom number formats are rejected because quoted display fragments require separate semantic recovery checks. |
 | XLSX simple arithmetic/SUM/AVERAGE/MIN/MAX/COUNT formulas using local A1 references | Preserve only the explicitly validated formula grammar. Remove cached results and calculation chains; request full recalculation. No formula evaluation is provided. |
-| XLSX other formulas, defined names, external links, connections, pivot/chart caches, drawings, headers/footers, conditional formatting, data validation and phonetic text | Reject. Sensitive formulas are never rewritten as ordinary strings. |
+| XLSX other formulas, defined names, external links, connections, pivot/chart caches, headers/footers, conditional formatting, data validation and phonetic text | Reject. Sensitive formulas are never rewritten as ordinary strings. Restricted picture-only drawings are opt-in. |
 | XLSX legacy comments/notes | Process rich text and authors; VML drawings remain unsupported, so packages containing VML are rejected. |
 | Core, extended and custom document properties | Redact supported string values; reject detected typed/structural values, opaque binary variants and escape-like `_xNNNN_` source/replacement data in these unverified contexts. No claim that all identifying metadata is automatically removed. |
 | XML comments and processing instructions | Reject rather than preserve an unprocessed alternate surface. DTDs/entities are prohibited. |
 | External relationships, signatures, macros, ActiveX, unknown parts/extensions | Reject; do not strip signatures or active content silently. |
 | Embedded DOCX/XLSX packages | Recursively process recognized package relationships with shared aggregate size/entry/detection/field/depth limits. This does not enable OLE or drawing-based visual embedding; those containers remain rejected. |
-| OLE objects, arbitrary attachments, media/images | Reject. Images require a separate verified OCR/pixel-redaction adapter, not pass-through. |
+| OLE objects, arbitrary attachments, non-picture media | Reject. |
+| Embedded PNG/JPEG pictures | Reject by default. Explicit IImageRedactor injection enables the restricted [OCR/pixel-redaction profile](ocr.md); never pass original images through. |
 
 ## Formatting semantics
 
@@ -40,7 +41,7 @@ Inventory every ZIP entry and relationship before SDK loading. Enforce input/out
 
 Reports contain only numeric part/field paths and source-free detections, never part names, field values, replacement strings or source text. Edit-aware results contain sensitive transient replacement data and must not be logged. Successful processing means accepted detector matches were replaced within the supported profile, not that every sensitive value was discovered.
 
-No native parser is used. Managed parsing still has CPU/memory risks: hosts must limit concurrent requests and use an isolated worker with external time/memory limits for hostile workloads. This library does not claim to implement that deployment boundary.
+The default Office path uses no native parser. Opt-in image adapters can use native SkiaSharp/Tesseract in-process; this is not sandboxed and cancellation cannot interrupt a native call. Parsing still has CPU/memory risks: hosts must limit concurrent requests and use an isolated worker with external time/memory limits for hostile workloads. This library does not implement that deployment boundary. See [OCR configuration and native limitations](ocr.md).
 
 ## Construction and explicit registration
 
@@ -77,6 +78,7 @@ Import NuntivusRedact.Extensions.DependencyInjection and NuntivusRedact.Formats.
 | MaximumXmlDepth / MaximumXmlNodes | 64 / 200,000 aggregate reader nodes |
 | MaximumFields / MaximumDetections | 50,000 inspected values / 10,000 accepted detections |
 | MaximumNestingDepth | 3 embedded levels below the outer package (0 rejects embedded packages) |
+| MaximumImages / MaximumImagePixels | 32 image parts / 40 million decoded pixels across nested packages, only when images are enabled |
 
 All budgets apply per processing call; nested packages share the aggregate counters and may conservatively count container bytes and nested bytes separately. Input/output staging and parsed XML may allocate multiple bounded copies. Text-engine limits still apply per logical field. Limits must be positive except nesting (0 through 8); XML depth is capped at 256. Configure host concurrency separately.
 
@@ -86,4 +88,4 @@ Formula support is deliberately limited to uppercase local A1 references (option
 
 xUnit fixtures must cover split-run and variable-length edits, formatting properties, revisions, metadata, unused strings, hidden sheets, formulas/caches, nested packages, sentinel recovery from every output part, malformed ZIP/XML, unsupported features, limits, cancellation, concurrent reuse and precommit failures. SDK reopen/schema validation is automated; actual Word/Excel repair/rendering checks require an available application and must be recorded separately, never inferred.
 
-PPTX remains deferred under OFF-001. PDF/OCR/native-worker scope remains unfinished under SEC-002. No binary benchmark or publication is authorized by this implementation.
+PPTX remains deferred under OFF-001. Optional OCR/picture implementation and native limits are in [OCR/images](ocr.md); PDF and native-worker scope remain unfinished under SEC-002. No binary benchmark or publication is authorized by this implementation.

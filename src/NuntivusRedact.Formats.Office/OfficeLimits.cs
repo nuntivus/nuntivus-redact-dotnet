@@ -26,6 +26,11 @@ public sealed record OfficeLimits
     /// <summary>Gets the number of embedded package levels allowed below the outer package.</summary>
     public int MaximumNestingDepth { get; init; } = 3;
 
+    /// <summary>Maximum image parts across all nested packages when image processing is enabled.</summary>
+    public int MaximumImages { get; init; } = 32;
+    /// <summary>Aggregate decoded image pixels across nested packages, enforced before each raster decode.</summary>
+    public long MaximumImagePixels { get; init; } = 40_000_000;
+
     internal void Validate()
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(MaximumInputBytes, 1);
@@ -41,5 +46,7 @@ public sealed record OfficeLimits
         ArgumentOutOfRangeException.ThrowIfLessThan(MaximumDetections, 1);
         ArgumentOutOfRangeException.ThrowIfNegative(MaximumNestingDepth);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(MaximumNestingDepth, 8);
+        ArgumentOutOfRangeException.ThrowIfLessThan(MaximumImages, 1);
+        ArgumentOutOfRangeException.ThrowIfLessThan(MaximumImagePixels, 1);
     }
 }

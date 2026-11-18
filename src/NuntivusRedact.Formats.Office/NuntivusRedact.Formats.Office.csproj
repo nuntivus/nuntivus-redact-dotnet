@@ -2,6 +2,7 @@
   <PropertyGroup><IsPackable>true</IsPackable></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../NuntivusRedact.Abstractions/NuntivusRedact.Abstractions.csproj" />
+    <ProjectReference Include="../NuntivusRedact.Ocr.Abstractions/NuntivusRedact.Ocr.Abstractions.csproj" />
     <PackageReference Include="DocumentFormat.OpenXml" />
   </ItemGroup>
 </Project>

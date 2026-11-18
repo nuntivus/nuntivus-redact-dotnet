@@ -117,13 +117,14 @@ Acceptance criteria: license approved; reparsing and supported recovery paths pr
 Required tests: extraction, raw object/revision recovery, annotations/forms/attachments/metadata, scanned-document rejection or secure pipeline.
 
 ### OCR-001: Image and OCR support
-Status: NOT STARTED
+Status: IN PROGRESS (restricted optional PNG/JPEG and Office picture implementation; native-worker isolation remains deferred)
 Priority: High
 Dependencies: CORE-001, SEC-001
 Description: OCR contracts, optional Tesseract adapter, coordinate mapping, permanent pixel redaction, sanitized metadata and validated re-encoding.
 Expected files: src/NuntivusRedact.Ocr.Abstractions/*, src/NuntivusRedact.Ocr.Tesseract/*, src/NuntivusRedact.Formats.Images/*.
 Acceptance criteria: coordinates validated; untrusted native processing isolated as needed; accuracy limitations explicit; multi-frame data handled/rejected.
 Required tests: pixel recovery, OCR coordinate fixtures, metadata, frames, malformed images, limits and provider failures.
+Implementation group VERIFIED locally: Ocr.Abstractions, Ocr.Tesseract and Formats.Images implement replaceable OCR, validated word coordinates, opaque matched-word pixels and metadata-free PNG. Office opts into picture-only DrawingML via an additive constructor; default image rejection remains. Owner explicitly selected in-process native execution, not a worker. Full Release verification passed 223/223 tests (36 new targeted cases), zero skipped, both solutions, formatting, fifteen package/symbol pairs, docs and audited dependencies. Isolated NuGet build and publish consumers passed actual Windows x64 Tesseract recognition and DOCX/XLSX pixel/re-OCR recovery; transitive native-asset deployment is tested. IDE build and 109/109 format tests pass. No broad accuracy, cross-platform native or sandbox claim; full OCR-001/SEC-002 native-worker gates remain unfinished. See formats/ocr.md, ADR-011 and PROGRESS.md for commands/evidence.
 
 ### WEB-001: ASP.NET Core integration
 Status: VERIFIED
@@ -194,7 +195,7 @@ Required tests: Release sample builds and smoke runs; links and API review.
 Status: NOT STARTED
 Priority: High
 Dependencies: CORE-001; OCR provider contracts coordinated with OCR-001
-Description: Evaluate and implement first-class custom analyzer, policy, validation-rule and OCR-provider contracts with explicit registration. Current custom behavior is supported by ISensitiveDataDetector, strategy/processor interfaces, and immutable policy predicates; separate analyzer/policy/validator/OCR interfaces are not yet delivered.
+Description: Evaluate and implement first-class custom analyzer, policy and validation-rule contracts with explicit registration. Current custom behavior is supported by ISensitiveDataDetector, strategy/processor interfaces, and immutable policy predicates; separate analyzer/policy/validator interfaces are not yet delivered. OCR-provider and image-redactor contracts are implemented under OCR-001 with provider-swap and architecture tests; do not treat that subset as completion of EXT-001.
 Expected files: src/NuntivusRedact.Abstractions/*, src/NuntivusRedact.Ocr.Abstractions/*, src/NuntivusRedact.Core/*, src/NuntivusRedact.Extensions.DependencyInjection/*, samples/*, docs/EXTENSIBILITY.md.
 Acceptance criteria: working external extension examples, inward dependencies, thread safety, bounded/cancellable processing, public XML docs and compatibility review; no reflection discovery or unnecessary parallel abstractions.
 Required tests: external implementation/registration, validation failure semantics, cancellation, configuration snapshots and architecture checks.

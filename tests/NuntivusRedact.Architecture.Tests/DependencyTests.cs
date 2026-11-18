@@ -18,7 +18,7 @@ public sealed class DependencyTests
         var assembly = typeof(OfficeLimits).Assembly;
         Assert.DoesNotContain(assembly.GetTypes(), type => type.IsClass && type.IsAbstract && type.IsSealed &&
             !type.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false));
-        foreach (var name in new[] { "OfficePackage", "OfficeContent", "ExcelContent", "OfficeString" })
+        foreach (var name in new[] { "OfficePackage", "OfficeContent", "ExcelContent", "OfficeString", "OfficeDrawing" })
         {
             var implementation = assembly.GetType($"NuntivusRedact.Formats.Office.{name}", true)!;
             var contract = assembly.GetType($"NuntivusRedact.Formats.Office.I{name}", true)!;
@@ -38,7 +38,9 @@ public sealed class DependencyTests
         Assembly[] assemblies = [typeof(Detection).Assembly, typeof(RedactionEngine).Assembly,
             typeof(PersonalDataDetectors).Assembly, typeof(RegexDetector).Assembly,
             typeof(FixedReplacementStrategy).Assembly, typeof(JsonDocumentProcessor).Assembly,
-            typeof(TextDocumentProcessor).Assembly, typeof(OfficeLimits).Assembly];
+            typeof(TextDocumentProcessor).Assembly, typeof(OfficeLimits).Assembly,
+            typeof(Ocr.IOcrProvider).Assembly, typeof(Ocr.Tesseract.TesseractOcrProvider).Assembly,
+            typeof(Formats.Images.RasterImageRedactor).Assembly];
         var allowed = new Dictionary<string, string[]>
         {
             ["NuntivusRedact.Abstractions"] = [],
@@ -47,7 +49,10 @@ public sealed class DependencyTests
             ["NuntivusRedact.Detectors.PersonalData"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Detectors.Regex"],
             ["NuntivusRedact.Strategies"] = ["NuntivusRedact.Abstractions"],
             ["NuntivusRedact.Formats.Text"] = ["NuntivusRedact.Abstractions"],
-            ["NuntivusRedact.Formats.Office"] = ["NuntivusRedact.Abstractions"],
+            ["NuntivusRedact.Formats.Office"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Ocr.Abstractions"],
+            ["NuntivusRedact.Ocr.Abstractions"] = ["NuntivusRedact.Abstractions"],
+            ["NuntivusRedact.Ocr.Tesseract"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Ocr.Abstractions"],
+            ["NuntivusRedact.Formats.Images"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Ocr.Abstractions"],
             ["NuntivusRedact.Formats.Json"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Formats.Text"]
         };
         foreach (var assembly in assemblies)

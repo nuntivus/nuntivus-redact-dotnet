@@ -4,8 +4,31 @@ using System.Xml.Linq;
 
 namespace NuntivusRedact.Formats.Office;
 
-internal sealed class OfficeContext(IEditAwareTextRedactor redactor, OfficeLimits limits, CancellationToken token, IOfficeString strings)
+internal sealed class OfficeContext(IEditAwareTextRedactor redactor, OfficeLimits limits, CancellationToken token, IOfficeString strings, bool imagesEnabled = false)
 {
+    internal bool ImagesEnabled { get; } = imagesEnabled;
+    internal IEditAwareTextRedactor Redactor { get; } = redactor;
+    internal long ImagePixels { get; private set; }
+    private int images;
+
+    internal void BeginImage()
+    {
+        Token.ThrowIfCancellationRequested();
+        if (++images > Limits.MaximumImages || ++fields > Limits.MaximumFields || ImagePixels >= Limits.MaximumImagePixels)
+            throw new RedactionException(RedactionError.LimitExceeded);
+    }
+
+    internal void CompleteImage(NuntivusRedact.Ocr.ImageRedactionResult result, string location)
+    {
+        if (result is null || result.Png.Length < 8 || !result.Png.Span[..8].SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }))
+            throw new RedactionException(RedactionError.InvalidDocument);
+        ImagePixels += (long)result.Width * result.Height;
+        if (ImagePixels > Limits.MaximumImagePixels || result.Png.Length > Limits.MaximumEntryBytes || result.Detections.Count > Limits.MaximumDetections - detections)
+            throw new RedactionException(RedactionError.LimitExceeded);
+        detections += result.Detections.Count;
+        Report.AddRange(result.Detections.Select(d => new DocumentDetection(location, d)));
+    }
+
     internal OfficeLimits Limits { get; } = limits;
     internal CancellationToken Token { get; } = token;
     internal List<DocumentDetection> Report { get; } = [];
@@ -62,7 +85,7 @@ internal sealed class OfficeContext(IEditAwareTextRedactor redactor, OfficeLimit
         if (++fields > Limits.MaximumFields || text.Length > Limits.MaximumEntryBytes)
             throw new RedactionException(RedactionError.LimitExceeded);
         EditRedactionResult result;
-        try { result = await redactor.RedactWithEditsAsync(text, Token).ConfigureAwait(false); }
+        try { result = await Redactor.RedactWithEditsAsync(text, Token).ConfigureAwait(false); }
         catch (OperationCanceledException) when (Token.IsCancellationRequested) { throw; }
         catch (RedactionException error) { throw new RedactionException(error.Error); }
         catch (Exception) { throw new RedactionException(RedactionError.ExtensionFailed); }

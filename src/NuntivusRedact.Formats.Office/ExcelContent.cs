@@ -15,7 +15,7 @@ internal sealed class ExcelContent(IOfficeString strings) : IExcelContent
     public async ValueTask TransformAsync(OfficePart part, OfficeContext context, string path, HashSet<XObject> handled)
     {
         var document = part.Xml!;
-        if (document.Descendants().Any(e => e.Name.Namespace != X || UnsupportedElements.Contains(e.Name.LocalName)))
+        if (document.Descendants().Any(e => e.Name.Namespace != X || (UnsupportedElements.Contains(e.Name.LocalName) && !(context.ImagesEnabled && e.Name == X + "drawing"))))
             throw new RedactionException(RedactionError.UnsupportedFormat);
         if (part.Kind == OfficeKind.CalculationChain) { part.Removed = true; return; }
         int field = 0;

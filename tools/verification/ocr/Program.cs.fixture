@@ -1,0 +1,46 @@
+using System.Text;
+using System.Xml.Linq;
+using NuntivusRedact;
+using NuntivusRedact.Formats.Images;
+using NuntivusRedact.Formats.Office;
+using NuntivusRedact.Formats.Tests;
+using NuntivusRedact.Ocr.Tesseract;
+using SkiaSharp;
+
+using var bitmap = new SKBitmap(1100, 180);
+using var canvas = new SKCanvas(bitmap);
+canvas.Clear(SKColors.White);
+using var typeface = SKTypeface.FromFamilyName("Arial");
+using var font = new SKFont(typeface, 64);
+using var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+canvas.DrawText("alice@example.com", 40, 110, font, paint);
+canvas.Flush();
+using var image = SKImage.FromBitmap(bitmap);
+using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
+byte[] png = encoded.ToArray();
+using var provider = new TesseractOcrProvider(new TesseractOptions { DataPath = args[0] });
+var recognized = await provider.RecognizeAsync(png, bitmap.Width, bitmap.Height);
+int start = recognized.Text.IndexOf("alice@example.com", StringComparison.Ordinal);
+if (start < 0) throw new InvalidOperationException("Synthetic OCR fixture was not recognized.");
+var words = recognized.Words.Where(w => w.Span.Overlaps(new DetectionSpan(start, 17))).ToArray();
+if (words.Length == 0) throw new InvalidOperationException("Missing recognized word coordinates.");
+using var images = new RasterImageRedactor(provider);
+foreach (bool excel in new[] { false, true })
+{
+    using var input = new MemoryStream(OcrFixtures.Office(excel, png));
+    using var output = new MemoryStream();
+    IDocumentProcessor processor = excel ? new XlsxDocumentProcessor(OfficeFixtures.Engine(), null, images) : new DocxDocumentProcessor(OfficeFixtures.Engine(), null, images);
+    var report = await processor.ProcessAsync(input, output);
+    if (!report.Detections.Any(d => d.Location.EndsWith("/image/0", StringComparison.Ordinal))) throw new InvalidOperationException("Missing image detection.");
+    var entries = OfficeFixtures.Entries(output.ToArray());
+    var manifest = XDocument.Parse(Encoding.UTF8.GetString(entries["[Content_Types].xml"]));
+    var name = (string)manifest.Root!.Elements().Single(e => e.Name.LocalName == "Override" && (string?)e.Attribute("ContentType") == "image/png").Attribute("PartName")!;
+    using var recovered = SKBitmap.Decode(entries[name[1..]]);
+    foreach (var word in words)
+        for (int y = word.Bounds.Top; y < word.Bounds.Bottom; y++)
+            for (int x = word.Bounds.Left; x < word.Bounds.Right; x++)
+                if (recovered.GetPixel(x, y) != SKColors.Black) throw new InvalidOperationException("Original pixels remain in a matched word region.");
+    var again = await provider.RecognizeAsync(entries[name[1..]], recovered.Width, recovered.Height);
+    if (again.Text.Contains("alice", StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Synthetic matched text recovered after redaction.");
+    Console.WriteLine($"Native OCR and {(excel ? "XLSX" : "DOCX")} pixel recovery checks passed.");
+}

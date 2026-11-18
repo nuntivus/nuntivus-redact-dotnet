@@ -16,10 +16,13 @@
     <Project Path="src/NuntivusRedact.Detectors.Regex/NuntivusRedact.Detectors.Regex.csproj" />
     <Project Path="src/NuntivusRedact.Extensions.DependencyInjection/NuntivusRedact.Extensions.DependencyInjection.csproj" />
     <Project Path="src/NuntivusRedact.Formats.Csv/NuntivusRedact.Formats.Csv.csproj" />
+    <Project Path="src/NuntivusRedact.Formats.Images/NuntivusRedact.Formats.Images.csproj" />
     <Project Path="src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
     <Project Path="src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
     <Project Path="src/NuntivusRedact.Formats.Text/NuntivusRedact.Formats.Text.csproj" />
     <Project Path="src/NuntivusRedact.Formats.Xml/NuntivusRedact.Formats.Xml.csproj" />
+    <Project Path="src/NuntivusRedact.Ocr.Abstractions/NuntivusRedact.Ocr.Abstractions.csproj" />
+    <Project Path="src/NuntivusRedact.Ocr.Tesseract/NuntivusRedact.Ocr.Tesseract.csproj" />
     <Project Path="src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
   </Folder>
   <Folder Name="/tests/">
