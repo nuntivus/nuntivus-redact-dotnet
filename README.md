@@ -34,6 +34,7 @@ NuntivusRedact is a modular **.NET 10** library for applications that need to de
 - **Extensible detection:** email, phone, IP, IBAN, URL and credit-card candidates, plus bounded regex, keywords/dictionaries and custom detectors. Heuristics have [documented limitations](docs/DETECTION.md).
 - **Selectable transformation:** fixed/category replacement, full/partial masking and keyed HMAC pseudonymization. These have different semantics; none proves anonymization.
 - **Bounded structured processing:** UTF-8 TXT/CSV/JSON/XML, cancellation, numeric source-free reports and output staging/revalidation before commit.
+- **Restricted Office processing:** DOCX/XLSX with run-preserving edits, ZIP/relationship bounds and recovery checks; see the [Office support/rejection matrix](docs/formats/office.md).
 - **Optional integrations:** Microsoft DI registration and a raw-body ASP.NET Core adapter, while Core stays independent of both.
 - **Established format libraries:** CsvHelper for CSV, System.Text.Json for JSON, System.Xml/LINQ to XML for XML, and .NET encoding/streams for text.
 
@@ -78,15 +79,16 @@ See [Getting started](docs/GETTING_STARTED.md) for local NuGet feeds, structured
 | CSV | Comma-separated, doubled quotes, quoted multiline cells, headers treated as data | No dialect guessing or spreadsheet-formula sanitization; ragged/blank rows preserved |
 | JSON | Decoded string keys/values with primitive types preserved | Duplicate/colliding keys and detections in non-string primitives fail closed |
 | XML | Leaf text/CDATA, ordinary attributes and comments | DTDs, processing instructions, mixed content and detected structural identifiers are rejected |
-| Office / PDF / images / OCR | **Unsupported** | Planned work is not a support claim |
+| DOCX / XLSX | Restricted Open XML profile with unaffected formatting preserved | Reject revisions, drawings/images, OLE, external/active/signed/unknown content; restricted XLSX formulas, no calculation engine; see [Office](docs/formats/office.md) |
+| PPTX / PDF / images / OCR | **Unsupported** | Planned work is not a support claim |
 
-Defaults are 4 MB input, 8 MB output, depth 64, 10,000 inspected fields/nodes and 10,000 accepted detections; individual text-engine limits also apply. Processing buffers bounded data in memory—it is not constant-memory streaming. Invalid UTF-8, malformed input, unsupported features and exceeded limits fail closed. Read the [complete format/security profile](docs/formats/structured.md) before integrating.
+Structured-text defaults are 4 MB input, 8 MB output, depth 64, 10,000 inspected fields/nodes and 10,000 accepted detections; individual text-engine limits also apply. Office uses separate [binary limits](docs/formats/office.md). Processing buffers bounded data in memory—it is not constant-memory streaming. Invalid UTF-8, malformed input, unsupported features and exceeded limits fail closed. Read the [complete format/security profile](docs/formats/structured.md) before integrating.
 
 Input/output streams remain caller-owned; destinations must start empty. **Discard output after any error**, including a failed output write. Original formatting, schemas, signatures, source-file deletion and managed-memory erasure are not guaranteed.
 
 ## Packages and architecture
 
-Eleven independent product packages can be built locally. Install only the modules needed by the application; there is no all-in-one published package.
+Twelve independent product packages can be built locally. Install only the modules needed by the application; there is no all-in-one published package.
 
 | Package | Responsibility |
 | --- | --- |
@@ -99,6 +101,7 @@ Eleven independent product packages can be built locally. Install only the modul
 | [NuntivusRedact.Formats.Csv](src/NuntivusRedact.Formats.Csv) | Strict CSV with CsvHelper |
 | [NuntivusRedact.Formats.Json](src/NuntivusRedact.Formats.Json) | System.Text.Json-based processing |
 | [NuntivusRedact.Formats.Xml](src/NuntivusRedact.Formats.Xml) | Hardened System.Xml/LINQ to XML processing |
+| [NuntivusRedact.Formats.Office](src/NuntivusRedact.Formats.Office) | Restricted DOCX/XLSX using MIT Open XML SDK; separate binary limits and edit-aware redactor |
 | [NuntivusRedact.Extensions.DependencyInjection](src/NuntivusRedact.Extensions.DependencyInjection) | Optional explicit DI registration |
 | [NuntivusRedact.AspNetCore](src/NuntivusRedact.AspNetCore) | Optional bounded raw-body HTTP adapter |
 
@@ -126,7 +129,7 @@ pwsh -File ./tools/verification/docs-check.ps1
 pwsh -File ./tools/verification/package-smoke.ps1
 ```
 
-The verification script restores, builds Release, runs xUnit tests and creates `.nupkg`/`.snupkg` candidates under `artifacts/packages`. Package smoke inspects all eleven package/symbol pairs and runs an isolated consumer. The intentionally nonpackable Web API sample can emit a pack warning. POSIX users can run `sh tools/verification/verify.sh`; the package/documentation scripts use PowerShell 7.
+The verification script restores, builds Release, runs xUnit tests and creates `.nupkg`/`.snupkg` candidates under `artifacts/packages`. Package smoke inspects all twelve package/symbol pairs and runs an isolated six-format consumer. The intentionally nonpackable Web API sample can emit a pack warning. POSIX users can run `sh tools/verification/verify.sh`; the package/documentation scripts use PowerShell 7.
 
 CI is configured for Windows/Linux. The manual [package-preparation workflow](.github/workflows/release.yml) uploads candidate artifacts only; **no publishing or deployment occurs**. Workflow badges reflect hosted runs only after repository setup. Local executed results, known blockers and historical evidence are in [Progress](docs/PROGRESS.md).
 
@@ -141,7 +144,7 @@ CI is configured for Windows/Linux. The manual [package-preparation workflow](.g
 
 ## Roadmap and maturity
 
-The managed-text profile is implemented and locally tested, but the **full roadmap is incomplete**. Office/PDF/OCR, binary recovery/native isolation, remaining extension contracts, binary performance and final release gates remain unfinished. Repository/Source Link provenance also needs the actual approved Git identity.
+The managed-text and restricted DOCX/XLSX profiles are implemented and locally tested, but the **full roadmap is incomplete**. PPTX, broader Office fidelity/embedded-object support, PDF/OCR, remaining binary recovery/native isolation, extension contracts, binary performance and final release gates remain unfinished. Microsoft Office application/visual fidelity is not verified; see [evidence](docs/PROGRESS.md). Repository/Source Link provenance still needs release validation.
 
 [Historical managed benchmarks](docs/PERFORMANCE.md) are environment-specific measurements, not general throughput or current-version guarantees. They predate the CSV backend change; no new timings are claimed. A badge, sample HTTP response or detector match is not a security certification or proof of anonymization.
 

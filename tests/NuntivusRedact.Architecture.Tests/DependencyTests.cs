@@ -3,6 +3,7 @@ using NuntivusRedact.Core;
 using NuntivusRedact.Detectors.PersonalData;
 using NuntivusRedact.Detectors.Regex;
 using NuntivusRedact.Formats.Json;
+using NuntivusRedact.Formats.Office;
 using NuntivusRedact.Formats.Text;
 using NuntivusRedact.Strategies;
 using Xunit;
@@ -12,12 +13,32 @@ namespace NuntivusRedact.Architecture.Tests;
 public sealed class DependencyTests
 {
     [Fact]
+    public void OfficeHelpersUseInterfacesAndInstanceImplementations()
+    {
+        var assembly = typeof(OfficeLimits).Assembly;
+        Assert.DoesNotContain(assembly.GetTypes(), type => type.IsClass && type.IsAbstract && type.IsSealed &&
+            !type.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false));
+        foreach (var name in new[] { "OfficePackage", "OfficeContent", "ExcelContent", "OfficeString" })
+        {
+            var implementation = assembly.GetType($"NuntivusRedact.Formats.Office.{name}", true)!;
+            var contract = assembly.GetType($"NuntivusRedact.Formats.Office.I{name}", true)!;
+            Assert.True(contract.IsInterface);
+            Assert.True(contract.IsAssignableFrom(implementation));
+            Assert.True(implementation.IsSealed);
+            Assert.DoesNotContain(implementation.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly), method => !method.IsSpecialName);
+            Assert.All(contract.GetMethods(), method => Assert.False(method.IsStatic));
+        }
+        foreach (var processor in new[] { typeof(DocxDocumentProcessor), typeof(XlsxDocumentProcessor) })
+            Assert.Contains(processor.GetFields(BindingFlags.Instance | BindingFlags.NonPublic), field => field.FieldType.Name == "IOfficePackage");
+    }
+
+    [Fact]
     public void ProductAssembliesDependInwardWithoutCyclesOrDiInCore()
     {
         Assembly[] assemblies = [typeof(Detection).Assembly, typeof(RedactionEngine).Assembly,
             typeof(PersonalDataDetectors).Assembly, typeof(RegexDetector).Assembly,
             typeof(FixedReplacementStrategy).Assembly, typeof(JsonDocumentProcessor).Assembly,
-            typeof(TextDocumentProcessor).Assembly];
+            typeof(TextDocumentProcessor).Assembly, typeof(OfficeLimits).Assembly];
         var allowed = new Dictionary<string, string[]>
         {
             ["NuntivusRedact.Abstractions"] = [],
@@ -26,6 +47,7 @@ public sealed class DependencyTests
             ["NuntivusRedact.Detectors.PersonalData"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Detectors.Regex"],
             ["NuntivusRedact.Strategies"] = ["NuntivusRedact.Abstractions"],
             ["NuntivusRedact.Formats.Text"] = ["NuntivusRedact.Abstractions"],
+            ["NuntivusRedact.Formats.Office"] = ["NuntivusRedact.Abstractions"],
             ["NuntivusRedact.Formats.Json"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Formats.Text"]
         };
         foreach (var assembly in assemblies)

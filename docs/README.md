@@ -2,7 +2,7 @@
 
 [Project overview](../README.md) · [Get started](GETTING_STARTED.md) · [API reference](API_REFERENCE.md) · [Contribute](../CONTRIBUTING.md)
 
-NuntivusRedact is an **alpha .NET 10 library**, not a complete document-sanitization service. The implemented profile covers UTF-8 text, CSV, JSON and XML. Office, PDF, images and OCR are unsupported. Successful replacement means configured matches were transformed; it is not proof of anonymization or complete discovery.
+NuntivusRedact is an **alpha .NET 10 library**, not a complete document-sanitization service. Implemented profiles cover UTF-8 text, CSV, JSON, XML and restricted [DOCX/XLSX](formats/office.md). PPTX, PDF, images and OCR are unsupported. Successful replacement means configured matches were transformed; it is not proof of anonymization or complete discovery.
 
 ## Start here
 
@@ -50,7 +50,7 @@ Commands and expected behavior are in [Getting started](GETTING_STARTED.md). App
 
 ## Roadmap and evidence
 
-The full roadmap is **incomplete**. Keep present capabilities separate from planned Office/PDF/OCR and binary-security work.
+The full roadmap is **incomplete**. Keep restricted DOCX/XLSX capabilities separate from deferred PPTX, broader Office fidelity, PDF/OCR and remaining binary-security work.
 
 | Record | Purpose |
 | --- | --- |

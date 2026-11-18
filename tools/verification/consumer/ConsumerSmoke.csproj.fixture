@@ -5,6 +5,7 @@
     <PackageReference Include="NuntivusRedact.AspNetCore" Version="0.1.0-alpha.1" />
     <PackageReference Include="NuntivusRedact.Formats.Csv" Version="0.1.0-alpha.1" />
     <PackageReference Include="NuntivusRedact.Formats.Json" Version="0.1.0-alpha.1" />
+    <PackageReference Include="NuntivusRedact.Formats.Office" Version="0.1.0-alpha.1" />
     <PackageReference Include="NuntivusRedact.Formats.Xml" Version="0.1.0-alpha.1" />
     <PackageReference Include="NuntivusRedact.Strategies" Version="0.1.0-alpha.1" />
     <PackageReference Include="NuntivusRedact.Detectors.PersonalData" Version="0.1.0-alpha.1" />

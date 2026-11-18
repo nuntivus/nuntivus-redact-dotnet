@@ -2,6 +2,7 @@
   <PropertyGroup><OutputType>Exe</OutputType><GenerateDocumentationFile>false</GenerateDocumentationFile></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/NuntivusRedact.Extensions.DependencyInjection/NuntivusRedact.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Detectors.Regex/NuntivusRedact.Detectors.Regex.csproj" />
   </ItemGroup>

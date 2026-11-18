@@ -1,4 +1,7 @@
 using System.Text;
+using System.IO.Compression;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using Microsoft.Extensions.DependencyInjection;
 using NuntivusRedact;
 using NuntivusRedact.AspNetCore;
@@ -7,25 +10,62 @@ using NuntivusRedact.Detectors.PersonalData;
 using NuntivusRedact.Extensions.DependencyInjection;
 using NuntivusRedact.Formats.Csv;
 using NuntivusRedact.Formats.Json;
+using NuntivusRedact.Formats.Office;
 using NuntivusRedact.Formats.Text;
 using NuntivusRedact.Formats.Xml;
 using NuntivusRedact.Strategies;
+using S = DocumentFormat.OpenXml.Spreadsheet;
+using W = DocumentFormat.OpenXml.Wordprocessing;
 
 var services = new ServiceCollection();
 services.AddNuntivusRedact(new RedactionPolicyBuilder(new FixedReplacementStrategy()).Build())
     .AddDocumentProcessor<TextDocumentProcessor>().AddDocumentProcessor<JsonDocumentProcessor>()
-    .AddDocumentProcessor<CsvDocumentProcessor>().AddDocumentProcessor<XmlDocumentProcessor>();
+    .AddDocumentProcessor<CsvDocumentProcessor>().AddDocumentProcessor<XmlDocumentProcessor>()
+    .AddDocumentProcessor<DocxDocumentProcessor>().AddDocumentProcessor<XlsxDocumentProcessor>();
 services.AddSingleton(PersonalDataDetectors.Email());
 services.AddNuntivusRedactHttp();
 using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
 foreach (var processor in provider.GetServices<IDocumentProcessor>())
 {
     string source = processor.Format switch { "json" => "{\"email\":\"alice@example.com\"}", "xml" => "<email>alice@example.com</email>", _ => "alice@example.com" };
-    using var input = new MemoryStream(Encoding.UTF8.GetBytes(source));
+    using var input = new MemoryStream(processor.Format is "docx" or "xlsx" ? OfficeSource(processor.Format) : Encoding.UTF8.GetBytes(source));
     using var output = new MemoryStream();
     var result = await processor.ProcessAsync(input, output);
     if (result.Detections.Count != 1 || Encoding.UTF8.GetString(output.ToArray()).Contains("alice@example.com", StringComparison.Ordinal))
         throw new InvalidOperationException("Package consumer verification failed.");
+    if (processor.Format is "docx" or "xlsx")
+    {
+        output.Position = 0;
+        using var zip = new ZipArchive(output, ZipArchiveMode.Read, true);
+        foreach (var entry in zip.Entries)
+        {
+            using var reader = new StreamReader(entry.Open());
+            if (reader.ReadToEnd().Contains("alice@example.com", StringComparison.Ordinal)) throw new InvalidOperationException("Office package recovery check failed.");
+        }
+    }
 }
 _ = provider.GetRequiredService<NuntivusRedactHttpHandler>();
-Console.WriteLine("Package-only consumer passed all four formats and HTTP service resolution.");
+if (!ReferenceEquals(provider.GetRequiredService<ITextRedactor>(), provider.GetRequiredService<IEditAwareTextRedactor>())) throw new InvalidOperationException("Edit-aware DI identity mismatch.");
+Console.WriteLine("Package-only consumer passed all six formats, Office recovery and HTTP/edit-aware service resolution.");
+
+static byte[] OfficeSource(string format)
+{
+    using var buffer = new MemoryStream();
+    if (format == "docx")
+    {
+        using var document = WordprocessingDocument.Create(buffer, WordprocessingDocumentType.Document, true);
+        var main = document.AddMainDocumentPart();
+        document.ChangeIdOfPart(main, "rIdMain");
+        main.Document = new W.Document(new W.Body(new W.Paragraph(new W.Run(new W.Text("alice@example.com")))));
+    }
+    else
+    {
+        using var document = SpreadsheetDocument.Create(buffer, SpreadsheetDocumentType.Workbook, true);
+        var book = document.AddWorkbookPart();
+        document.ChangeIdOfPart(book, "rIdBook");
+        var sheet = book.AddNewPart<WorksheetPart>("rIdSheet");
+        sheet.Worksheet = new S.Worksheet(new S.SheetData(new S.Row(new S.Cell(new S.InlineString(new S.Text("alice@example.com"))) { CellReference = "A1", DataType = S.CellValues.InlineString }) { RowIndex = 1U }));
+        book.Workbook = new S.Workbook(new S.Sheets(new S.Sheet { Id = book.GetIdOfPart(sheet), SheetId = 1U, Name = "Sheet1" }));
+    }
+    return buffer.ToArray();
+}

@@ -4,6 +4,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../src/NuntivusRedact.AspNetCore/NuntivusRedact.AspNetCore.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />

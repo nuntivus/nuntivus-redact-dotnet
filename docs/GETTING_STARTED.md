@@ -103,7 +103,7 @@ dotnet add RedactDemo/RedactDemo.csproj package NuntivusRedact.Strategies --vers
 
 Replace the feed placeholder with the absolute path from your checkout, then use the text example in `RedactDemo/Program.cs`. Do not add a consumer project inside the checkout when contributing; keep it separate from the maintained solutions. For structured JSON also add `NuntivusRedact.Formats.Json` at the same version from the local feed.
 
-For packages with external dependencies (CSV/CsvHelper, DI/HTTP), configure **both** the local feed and nuget.org in the consumer's `NuGet.Config`; a local-only `--source` may not resolve external packages. The [package-only consumer fixture](../tools/verification/consumer/NuGet.Config.fixture) demonstrates the two-feed setup. Do not publish candidates or rely on NuGet.org install badges before owner approval and actual publication. Alpha APIs may change; see [migration notes](MIGRATION.md).
+For packages with external dependencies (CSV/CsvHelper, Office/Open XML SDK, DI/HTTP), configure **both** the local feed and nuget.org in the consumer's `NuGet.Config`; a local-only `--source` may not resolve external packages. The [package-only consumer fixture](../tools/verification/consumer/NuGet.Config.fixture) demonstrates the two-feed setup. Do not publish candidates or rely on NuGet.org install badges before owner approval and actual publication. Alpha APIs may change; see [migration notes](MIGRATION.md).
 
 ## 6. Try the optional local API
 
@@ -120,4 +120,6 @@ Visit `http://127.0.0.1:5187/openapi/v1.json`. The [HTTP guide](HTTP.md) describ
 - [Contribute](../CONTRIBUTING.md) or [prepare a GitHub repository](GITHUB_SETUP.md)
 - [Support matrix and deferred work](formats/README.md)
 
-Successful replacement does not prove complete sensitive-data discovery or anonymization. Masking and keyed pseudonymization are not equivalent to irreversible anonymization. Office/PDF/images/OCR remain unsupported.
+For DOCX/XLSX, reference NuntivusRedact.Formats.Office and follow the [Office support matrix and registration example](formats/office.md). The executable DI sample processes both formats with synthetic data. Office has independent binary budgets and requires the optional edit-aware capability implemented by Core; it does not use the UTF-8 processor base. The HTTP sample still enables only its four text formats.
+
+Successful replacement does not prove complete sensitive-data discovery or anonymization. Masking and keyed pseudonymization are not equivalent to irreversible anonymization. PPTX/PDF/images/OCR remain unsupported.

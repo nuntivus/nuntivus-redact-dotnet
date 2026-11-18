@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsPackable>true</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../NuntivusRedact.Abstractions/NuntivusRedact.Abstractions.csproj" />
+    <PackageReference Include="DocumentFormat.OpenXml" />
+  </ItemGroup>
+</Project>

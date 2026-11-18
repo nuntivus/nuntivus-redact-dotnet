@@ -8,6 +8,8 @@
     <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Xml/NuntivusRedact.Formats.Xml.csproj" />
+    <Compile Include="../NuntivusRedact.Formats.Tests/OfficeFixtures.cs" Link="OfficeFixtures.cs" />
   </ItemGroup>
 </Project>

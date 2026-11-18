@@ -6,6 +6,7 @@
     <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Csv/NuntivusRedact.Formats.Csv.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Xml/NuntivusRedact.Formats.Xml.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Core/NuntivusRedact.Core.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />

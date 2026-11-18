@@ -1,4 +1,5 @@
 # Detailed task backlog
+Office architecture follow-up: VERIFIED locally. All Office static helpers replaced by internal interface-backed package/content/Excel/string services with unchanged public constructors and request-local state. Release build, 187/187 tests (zero skipped), formatting, twelve packages and isolated six-format consumer passed; see PROGRESS.md and artifacts/office-instances-*.log. Existing IDE unloaded-project issue remains a reload follow-up. This does not expand OFF-001/SEC-002 supported scope.
 
 Statuses: NOT STARTED, IN PROGRESS, BLOCKED, COMPLETED, VERIFIED. Only actual successful verification permits VERIFIED. All listed projects not yet created are deferred, not empty completed deliverables.
 
@@ -97,7 +98,8 @@ Required tests: quoted/multiline/blank/ragged CSV, Unicode and output-byte limit
 Evidence — 2026-11-17, code checks complete by 18:07:26+01:00: CsvHelper 33.1.0 (MS-PL OR Apache-2.0, Apache-2.0 selected) isolated to Formats.Csv. Both Release solutions and IDE build passed; canonical verify.ps1 passed restore/build/test/pack with 105/105 tests, zero skipped and eleven package/symbol pairs. Format tests are 40/40 including 20 new cases. Formatting and strict audited restore/vulnerability listing passed (point-in-time); isolated four-format/HTTP package consumer passed. Expected nonpackable Web API pack warning only. Logs artifacts/fmt002-{formats,verification,workspace-build,format,audit,package-smoke}.log; TRX artifacts/test-results/fmt002-formats.trx and 18_06_24 run files. See ADR-009. No performance rerun or publication; historical CSV timings do not characterize this implementation. Full roadmap and provenance blockers remain unchanged.
 
 ### OFF-001: Secure Office support
-Status: NOT STARTED
+Status: IN PROGRESS (restricted DOCX/XLSX implemented; PPTX and Microsoft-application/visual follow-ups deferred)
+Evidence: dependency/license review, additive edit-aware contracts, both CLI Release solutions, final **186/186 tests (zero skipped)**, twelve package/symbol pairs, six-format isolated consumer, samples, formatting, docs and audit passed. Includes ST_Xstring/opaque-property/custom-number-format hardening. Exact results/commands and the blocked Word COM smoke are in PROGRESS.md. No broad Office fidelity, PDF/OCR, native isolation or binary performance claim.
 Priority: High
 Dependencies: FMT-001, SEC-001
 Description: Open XML DOCX/XLSX/PPTX and content inventory. Handle or reject paragraphs/runs/tables/headers/footers/comments/tracked changes/hidden sheets/formulas/caches/notes/metadata/embedded objects/relationships.
@@ -142,7 +144,7 @@ Acceptance criteria: threats mapped to implemented mitigations/tests or explicit
 Required tests: adversarial, concurrency, error leakage, cancellation, raw recovery where supported; package vulnerability audit.
 
 ### SEC-002: Binary/native isolation and recovery hardening
-Status: NOT STARTED
+Status: IN PROGRESS (restricted Office archive/relationship/metadata/recovery checks implemented; remaining binary/native work deferred)
 Priority: Critical
 Dependencies: SEC-001; adapter-specific recovery checks completed with OFF-001, PDF-001 and OCR-001
 Description: Zip entry/count/ratio/size controls; external relationship rejection; encrypted/embedded content handling; metadata sanitation; safe temporary files; isolated worker/Docker assessment and implementation where necessary; recovery tests for every supported binary surface.
@@ -164,7 +166,7 @@ Evidence — 2026-11-17: BenchmarkDotNet 0.15.8 ShortRun completed 10/10 cases i
 Status: NOT STARTED
 Priority: Medium
 Dependencies: OFF-001, PDF-001, OCR-001 and applicable SEC-002 recovery/security checks
-Description: Measure Office/PDF and later image/OCR pipelines only when real supported implementations exist. All are currently unsupported; do not create placeholder processors or pretend binary bytes are text.
+Description: Measure Office/PDF and later image/OCR pipelines only after relevant feature/security gates pass. Restricted DOCX/XLSX now exists but has no measurements; PPTX/PDF/images/OCR remain unsupported. Do not create placeholder processors or pretend binary bytes are text.
 Expected files: benchmarks/NuntivusRedact.Benchmarks/*, docs/PERFORMANCE.md, adapter fixture tests.
 Acceptance criteria: bounded deterministic supported binary workloads, real public API execution, explicit measurement boundaries and actual environment/results; recovery/security correctness verified independently; no speculative optimizations or fabricated numbers.
 Required tests: adapter correctness/recovery first; fixture preflight, benchmark discovery and representative runs with actual timing/allocation results. Full milestone 13 remains incomplete until required binary scenarios execute.
@@ -177,7 +179,7 @@ Description: Independent metadata, README/license/XML docs, symbols, Source Link
 Expected files: Directory.Build.props, src/*/*.csproj, .github/workflows/release.yml, docs/RELEASE_PLAN.md.
 Acceptance criteria: Release pack succeeds; package contents inspected; no placeholder packages; no publishing without owner approval.
 Required tests: dotnet pack -c Release; inspect nupkg/snupkg contents and dependency graph; consumer smoke test.
-Evidence: 11 local nupkg/snupkg pairs built and inspected; isolated package-only consumer exercised all four supported formats and HTTP DI. README/LICENSE/XML/PDB checks passed. Blocker: no Git repository, approved remote or commit, so Source Link/source provenance cannot be verified. No package published. Solution pack emits an expected nonpackable Web API sample warning; libraries package successfully.
+Evidence: twelve local nupkg/snupkg pairs and an isolated six-format/HTTP/edit-aware consumer passed for the final hardened Office code. README/LICENSE/XML/PDB checks passed. Current blocker: release Source Link/source provenance is not verified for the uncommitted Office changes. A real Git repository/remote and feat/office-format branch now exist; the old no-repository blocker is historical. No package published. Solution pack emits an expected nonpackable Web API sample warning; libraries package successfully.
 
 ### DOC-001: Documentation and working samples
 Status: VERIFIED

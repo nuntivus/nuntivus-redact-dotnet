@@ -53,6 +53,8 @@ public static class ServiceCollectionExtensions
             var policy = provider.GetRequiredService<IOptions<NuntivusRedactOptions>>().Value.Policy!;
             return new RedactionEngine(provider.GetServices<ISensitiveDataDetector>().Select(d => new DetectorRegistration(d)), policy);
         });
+        services.TryAddSingleton<IEditAwareTextRedactor>(provider => provider.GetRequiredService<ITextRedactor>() as IEditAwareTextRedactor
+            ?? throw new InvalidOperationException("The configured text redactor does not support original-coordinate edits."));
         return new NuntivusRedactBuilder(services);
     }
     /// <summary>Registers a strict engine using an already validated immutable policy.</summary>
@@ -65,7 +67,7 @@ public static class ServiceCollectionExtensions
     public static void ValidateLifetimes(IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
-        Type[] contracts = [typeof(ISensitiveDataDetector), typeof(IRedactionStrategy), typeof(IDocumentProcessor), typeof(ITextRedactor)];
+        Type[] contracts = [typeof(ISensitiveDataDetector), typeof(IRedactionStrategy), typeof(IDocumentProcessor), typeof(ITextRedactor), typeof(IEditAwareTextRedactor)];
         if (services.Any(s => contracts.Contains(s.ServiceType) && s.Lifetime != ServiceLifetime.Singleton))
             throw new InvalidOperationException("Redaction extensions must use singleton lifetimes.");
     }

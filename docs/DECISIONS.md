@@ -1,5 +1,11 @@
 # Architecture decisions
 
+## ADR-010: Open XML SDK and edit-aware Office profile
+Context: DOCX/XLSX must preserve supported rich formatting without retaining hidden sensitive copies. Owner approved the Office implementation plan; arbitrary embedded objects and pixel-identical rendering are not promised.
+Decision: pin DocumentFormat.OpenXml 3.5.1 centrally, used only by the independent Office package. The restored net10.0 dependency graph is DocumentFormat.OpenXml.Framework 3.5.1 and System.IO.Packaging 10.0.2; all three nuspecs declare MIT. Use bounded framework ZIP/XML preflight before SDK parsing, fresh output packaging and SDK validation. Do not use Office Interop, ClosedXML or native parsing. Add an optional edit-aware interface/result without changing ITextRedactor or RedactionResult; Core emits replacements from its existing single execution pass. Replacement-bearing objects are sensitive transient data, not reports.
+Evidence: artifacts/office-review/{restore,audit,probe}.log; strict audited restore and vulnerability listing passed at review time. An isolated net10.0 probe created/reopened DOCX and XLSX, checked typed bold formatting and passed OpenXmlValidator. This is feasibility, not application rendering or full Office verification. A nullable assertion in the generated probe was corrected before the successful run.
+Consequences: only the explicit profile in formats/office.md is eligible for support. SDK schema validation does not establish semantic completeness or rendering fidelity; unsupported parts/features fail closed. No PDF/OCR/PPTX/native-worker or binary-performance scope is completed by this decision.
+
 ## ADR-001: .NET 10 and modular packages — 2026-11-17
 Context: owner requires .NET 10 LTS and third-party extensions.
 Options: monolith vs explicit independent packages.

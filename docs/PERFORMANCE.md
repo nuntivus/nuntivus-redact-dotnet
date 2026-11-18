@@ -6,7 +6,7 @@ PERF-001 measures the implemented managed-text profile, not secure document sani
 
 **Rename provenance:** all timing/GC/allocation results below were measured before the owner-requested rename from Redact.NET to NuntivusRedact. Historical log paths, discovered names, commands and source fingerprints are preserved as evidence, not asserted to identify the renamed assemblies. Only namespaces/identities changed; no new timing or performance equivalence claim is made. Current reproduction paths are adapted below; fixture correctness is rechecked separately during rename verification. See MIGRATION.md.
 
-Office (DOCX/XLSX/PPTX), PDF, images and OCR have **no implementations**. Their benchmarks are explicitly deferred until OFF-001/PDF-001/OCR-001 and applicable SEC-002 recovery/security checks pass. No binary input is treated as text. These measurements do not complete the entire performance milestone or the full roadmap.
+Restricted DOCX/XLSX implementations now exist, but no Office timing/allocation measurements were executed. PPTX, PDF, images and OCR remain unimplemented. Binary benchmarks stay deferred until the relevant feature/security acceptance gates pass. No binary input is treated as text. Subsequent CSV backend and Core edit-aware-result changes are not characterized by these historical measurements; no timing/performance-equivalence claim is made. These measurements do not complete the entire performance milestone or the full roadmap.
 
 ## Workloads and measurement boundary
 

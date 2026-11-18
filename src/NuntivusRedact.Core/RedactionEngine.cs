@@ -19,7 +19,7 @@ public sealed record DetectorRegistration
 }
 
 /// <summary>Bounded, deterministic, strict text processing with no logging or DI dependency.</summary>
-public sealed class RedactionEngine : ITextRedactor
+public sealed class RedactionEngine : IEditAwareTextRedactor
 {
     private readonly DetectorRegistration[] detectors;
     private readonly RedactionPolicy policy;
@@ -36,6 +36,13 @@ public sealed class RedactionEngine : ITextRedactor
 
     /// <inheritdoc />
     public async ValueTask<RedactionResult> RedactAsync(string text, CancellationToken cancellationToken = default)
+    {
+        var result = await RedactWithEditsAsync(text, cancellationToken).ConfigureAwait(false);
+        return new RedactionResult(result.Text, result.Edits.Select(edit => edit.Detection));
+    }
+
+    /// <inheritdoc />
+    public async ValueTask<EditRedactionResult> RedactWithEditsAsync(string text, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(text);
         cancellationToken.ThrowIfCancellationRequested();
@@ -72,6 +79,7 @@ public sealed class RedactionEngine : ITextRedactor
             }
             accepted.Sort((left, right) => left.Span.Start.CompareTo(right.Span.Start));
             var output = new StringBuilder(Math.Min(text.Length, policy.MaximumOutputCharacters));
+            var edits = new List<RedactionEdit>(accepted.Count);
             int position = 0;
             foreach (var detection in accepted)
             {
@@ -81,11 +89,12 @@ public sealed class RedactionEngine : ITextRedactor
                 var replacement = strategy.Redact(text.AsSpan(detection.Span.Start, detection.Span.Length), detection);
                 if (replacement is null) throw new RedactionException(RedactionError.ExtensionFailed);
                 Append(output, replacement);
+                edits.Add(new RedactionEdit(detection, replacement));
                 position = detection.Span.End;
             }
             Append(output, text.AsSpan(position));
             cancellationToken.ThrowIfCancellationRequested();
-            return new RedactionResult(output.ToString(), accepted);
+            return new EditRedactionResult(output.ToString(), edits);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw new OperationCanceledException(cancellationToken); }
         catch (RedactionException error) { throw new RedactionException(error.Error); }
