@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/nuntivus-redact-banner.svg" alt="NuntivusRedact — modular .NET 10 libraries for text, CSV, JSON and XML detection and redaction" width="1280" />
+  <img src="docs/assets/nuntivus-redact-banner.svg" alt="NuntivusRedact — modular detection and redaction libraries" width="1280" />
 </p>
 
 <h1 align="center">NuntivusRedact</h1>
@@ -32,6 +32,7 @@ NuntivusRedact is a modular **.NET 10** library for applications that need to de
 - **Explicit composition:** choose detectors, strategies and format processors. No reflection-based plugin discovery, mandatory DI container or unknown-format fallback.
 - **Deterministic policies:** immutable policy snapshots, confidence/category filters, priorities and overlap resolution before transformation.
 - **Extensible detection:** email, phone, IP, IBAN, URL and credit-card candidates, plus bounded regex, keywords/dictionaries and custom detectors. Heuristics have [documented limitations](docs/DETECTION.md).
+- **Optional offline NLP:** replaceable entity providers and local ONNX inference with separately provisioned models; see [NLP profiles, licensing and accuracy limits](docs/nlp.md).
 - **Selectable transformation:** fixed/category replacement, full/partial masking and keyed HMAC pseudonymization. These have different semantics; none proves anonymization.
 - **Bounded structured processing:** UTF-8 TXT/CSV/JSON/XML, cancellation, numeric source-free reports and output staging/revalidation before commit.
 - **Restricted Office processing:** DOCX/XLSX with run-preserving edits, ZIP/relationship bounds and recovery checks; see the [Office support/rejection matrix](docs/formats/office.md).
@@ -98,6 +99,9 @@ Fifteen independent product packages can be built locally. Install only the modu
 | [NuntivusRedact.Detectors.Regex](src/NuntivusRedact.Detectors.Regex) | Bounded custom regex and dictionary/keyword detection |
 | [NuntivusRedact.Detectors.PersonalData](src/NuntivusRedact.Detectors.PersonalData) | Personal-data candidate detectors |
 | [NuntivusRedact.Strategies](src/NuntivusRedact.Strategies) | Replacement, masking and keyed pseudonymization |
+| [NuntivusRedact.Nlp.Abstractions](src/NuntivusRedact.Nlp.Abstractions) | Replaceable source-free entity recognition contracts |
+| [NuntivusRedact.Detectors.Nlp](src/NuntivusRedact.Detectors.Nlp) | Optional NLP detector adapter with immutable category mapping and budgets |
+| [NuntivusRedact.Nlp.Onnx](src/NuntivusRedact.Nlp.Onnx) | Local CPU cased WordPiece/BIO inference; models provisioned separately |
 | [NuntivusRedact.Formats.Text](src/NuntivusRedact.Formats.Text) | UTF-8 text and bounded staging/reporting infrastructure |
 | [NuntivusRedact.Formats.Csv](src/NuntivusRedact.Formats.Csv) | Strict CSV with CsvHelper |
 | [NuntivusRedact.Formats.Json](src/NuntivusRedact.Formats.Json) | System.Text.Json-based processing |
@@ -133,7 +137,7 @@ pwsh -File ./tools/verification/docs-check.ps1
 pwsh -File ./tools/verification/package-smoke.ps1
 ```
 
-The verification script restores, builds Release, runs xUnit tests and creates `.nupkg`/`.snupkg` candidates under `artifacts/packages`. Package smoke inspects all fifteen package/symbol pairs and runs an isolated six-format consumer. Windows x64 additionally runs `tools/verification/ocr-smoke.ps1` for native OCR and Office picture recovery using pinned test language data. The intentionally nonpackable Web API sample can emit a pack warning. POSIX users can run `sh tools/verification/verify.sh`; the package/documentation scripts use PowerShell 7.
+The verification script restores, builds Release, runs xUnit tests and creates `.nupkg`/`.snupkg` candidates under `artifacts/packages`. Package smoke inspects all eighteen package/symbol pairs and runs an isolated six-format/native synthetic NLP consumer. Windows x64 additionally runs `tools/verification/ocr-smoke.ps1` for native OCR and Office picture recovery using pinned test language data. The intentionally nonpackable Web API sample can emit a pack warning. POSIX users can run `sh tools/verification/verify.sh`; the package/documentation scripts use PowerShell 7.
 
 CI is configured for Windows/Linux. The manual [package-preparation workflow](.github/workflows/release.yml) uploads candidate artifacts only; **no publishing or deployment occurs**. Workflow badges reflect hosted runs only after repository setup. Local executed results, known blockers and historical evidence are in [Progress](docs/PROGRESS.md).
 

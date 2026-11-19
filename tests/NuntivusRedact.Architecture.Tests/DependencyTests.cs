@@ -13,6 +13,16 @@ namespace NuntivusRedact.Architecture.Tests;
 public sealed class DependencyTests
 {
     [Fact]
+    public void NlpContractsAndAdapterDoNotReferenceInferenceFrameworks()
+    {
+        foreach (var assembly in new[] { typeof(Nlp.IEntityRecognitionProvider).Assembly, typeof(Detectors.Nlp.NlpDetector).Assembly,
+            typeof(RedactionEngine).Assembly })
+            Assert.DoesNotContain(assembly.GetReferencedAssemblies(), reference => reference.Name!.StartsWith("Microsoft.ML.", StringComparison.Ordinal));
+        Assert.Contains(typeof(Nlp.Onnx.OnnxEntityRecognitionProvider).Assembly.GetReferencedAssemblies(),
+            reference => reference.Name == "Microsoft.ML.OnnxRuntime");
+    }
+
+    [Fact]
     public void OfficeHelpersUseInterfacesAndInstanceImplementations()
     {
         var assembly = typeof(OfficeLimits).Assembly;
@@ -40,11 +50,15 @@ public sealed class DependencyTests
             typeof(FixedReplacementStrategy).Assembly, typeof(JsonDocumentProcessor).Assembly,
             typeof(TextDocumentProcessor).Assembly, typeof(OfficeLimits).Assembly,
             typeof(Ocr.IOcrProvider).Assembly, typeof(Ocr.Tesseract.TesseractOcrProvider).Assembly,
-            typeof(Formats.Images.RasterImageRedactor).Assembly];
+            typeof(Formats.Images.RasterImageRedactor).Assembly, typeof(Nlp.IEntityRecognitionProvider).Assembly,
+            typeof(Detectors.Nlp.NlpDetector).Assembly, typeof(Nlp.Onnx.OnnxEntityRecognitionProvider).Assembly];
         var allowed = new Dictionary<string, string[]>
         {
             ["NuntivusRedact.Abstractions"] = [],
             ["NuntivusRedact.Core"] = ["NuntivusRedact.Abstractions"],
+            ["NuntivusRedact.Nlp.Abstractions"] = ["NuntivusRedact.Abstractions"],
+            ["NuntivusRedact.Detectors.Nlp"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Nlp.Abstractions"],
+            ["NuntivusRedact.Nlp.Onnx"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Nlp.Abstractions"],
             ["NuntivusRedact.Detectors.Regex"] = ["NuntivusRedact.Abstractions"],
             ["NuntivusRedact.Detectors.PersonalData"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Detectors.Regex"],
             ["NuntivusRedact.Strategies"] = ["NuntivusRedact.Abstractions"],

@@ -13,6 +13,7 @@ NuntivusRedact is an **alpha .NET 10 library**, not a complete document-sanitiza
 | Look up public contracts and operation semantics | [API reference](API_REFERENCE.md) |
 | Understand format support and rejection behavior | [Format matrix](formats/README.md) and [strict structured-text profile](formats/structured.md) |
 | Understand detector coverage and false positives/negatives | [Detection guide](DETECTION.md) |
+| Configure offline NLP and separately provisioned multilingual models | [NLP detection](nlp.md) |
 | Host the optional raw-body HTTP adapter | [HTTP integration](HTTP.md) |
 | Evaluate security boundaries | [Threat model and limitations](SECURITY.md) |
 | Configure replaceable OCR and embedded Office pictures | [OCR/images](formats/ocr.md) |

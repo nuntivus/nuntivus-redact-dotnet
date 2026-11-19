@@ -7,6 +7,8 @@
     <ProjectReference Include="../../src/NuntivusRedact.Core/NuntivusRedact.Core.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Detectors.Nlp/NuntivusRedact.Detectors.Nlp.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Nlp.Onnx/NuntivusRedact.Nlp.Onnx.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Json/NuntivusRedact.Formats.Json.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
     <ProjectReference Include="../../src/NuntivusRedact.Formats.Images/NuntivusRedact.Formats.Images.csproj" />

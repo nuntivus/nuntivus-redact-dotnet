@@ -4,11 +4,12 @@
 |---|---|
 | NuntivusRedact.Core.Tests | spans, confidence, deterministic priority/overlap, policy snapshot/filtering, limits, cancellation, surrogate safety, source-free failures, concurrency |
 | NuntivusRedact.Detectors.Tests | positive/negative heuristics, IPv4/IPv6, IBAN mod97, card Luhn/whitespace, dictionary copy/boundaries, regex timeout/input/candidate bounds and safe failures |
+| NuntivusRedact.Nlp.Tests | real native synthetic ONNX inference, multilingual original UTF-16 offsets, cased WordPiece/CJK/subwords, BIO/window reconciliation, bounded admission/resources, cancellation/recovery/disposal, malformed assets/profile/logits and engine policy/overlap integration; not trained-model accuracy |
 | NuntivusRedact.Strategies.Tests | fixed/category/full/partial masks, grapheme handling, keyed deterministic/category-separated pseudonyms, per-category policy and no rescanning |
 | NuntivusRedact.Formats.Tests | CSV multiline/quotes/empty fields, JSON names/strings/numbers/collisions, XML attributes/comments/CDATA/XXE/mixed-content, invalid UTF-8, depth/size/fields, cancellation, empty-output and stream ownership |
 | NuntivusRedact.Integration.Tests | optional DI equivalence/idempotence, options/lifetimes; bounded HTTP declared/actual size, malformed JSON 422, safe errors/headers, cancellation and multipart rejection |
 | NuntivusRedact.Security.Tests | malicious XML, encoded JSON recovery, strategy/I/O leakage, staged output and concurrency/report bounds |
-| NuntivusRedact.Architecture.Tests | allowed inward product assembly references and no Microsoft.Extensions dependency in Core |
+| NuntivusRedact.Architecture.Tests | allowed inward product assembly references, no Microsoft.Extensions dependency in Core, and no inference SDK dependency in Core/NLP contracts/adapter |
 | NuntivusRedact.Benchmarks.Tests | ten deterministic text/document parameter cases: setup output/recovery checks, accepted counts and repeated reuse of real benchmark entry points; no timing assertions |
 
 Source-free reports expose only configured category/ID, numeric structural path and field-relative UTF-16 coordinates. Do not use real PII fixtures.

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsTestProject>true</IsTestProject><GenerateDocumentationFile>false</GenerateDocumentationFile></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <ProjectReference Include="../../src/NuntivusRedact.Detectors.Nlp/NuntivusRedact.Detectors.Nlp.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Nlp.Onnx/NuntivusRedact.Nlp.Onnx.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Core/NuntivusRedact.Core.csproj" />
+    <ProjectReference Include="../../src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
+  </ItemGroup>
+</Project>

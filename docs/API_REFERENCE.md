@@ -18,6 +18,9 @@ XML documentation is built into each library and included in NuGet candidates. P
 | RedactionPolicyBuilder / RedactionPolicy | Validated snapshot with category/rule/priority/strategy filters |
 | RegexDetector / DictionaryDetector | Bounded custom regex and keyword/dictionary extensions |
 | PersonalDataDetectors | Seven documented heuristic candidate detectors |
+| IEntityRecognitionProvider / RecognizedEntity | Replaceable local NLP with source-free original UTF-16 entity spans |
+| NlpDetector / NlpDetectorOptions / NlpDetectionCategories | Optional detector adapter, immutable fixed-label mapping and budgets |
+| OnnxEntityRecognitionProvider / OnnxNerOptions | Disposable local CPU WordPiece/BIO inference with hash-verified assets, bounded windows and admission |
 | FixedReplacementStrategy / CategoryReplacementStrategy | Fixed and category-based replacements |
 | FullMaskingStrategy / PartialMaskingStrategy | Grapheme-aware masks, with intentional disclosure semantics |
 | HmacPseudonymizationStrategy | Category-separated deterministic keyed pseudonyms |
@@ -36,3 +39,4 @@ XML documentation is built into each library and included in NuGet candidates. P
 See DETECTION.md, formats/structured.md, EXTENSIBILITY.md and SECURITY.md for normative behavior and limitations. Methods validate configuration and arguments; processing failures use safe error codes. Source/output strings are sensitive even when some matches were replaced. No non-strict incomplete-success API exists.
 See [Office](formats/office.md) for constructor/registration examples and the exact binary support/rejection matrix. Edit lists are copied, ordered and nonoverlapping; producers must reconstruct final text from original UTF-16 offsets without splitting surrogate pairs. Office verifies that invariant before committing output.
 See [OCR/images](formats/ocr.md) for provider replacement, coordinate/text coverage rules, explicit Office image constructors, budgets, disposal and native deployment limitations. OCR results and image bytes remain sensitive; native cancellation is cooperative, not a hard interruption.
+See [offline NLP](nlp.md) for the exact tensor/tokenizer profile, local model provisioning, category mappings, provider replacement, disposal, native limits and unverified trained-model accuracy gates.

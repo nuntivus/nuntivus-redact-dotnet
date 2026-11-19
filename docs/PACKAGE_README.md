@@ -25,6 +25,9 @@ Successful processing means configured matches were transformed. It is **not pro
 | NuntivusRedact.Core | Engine, immutable policies and overlap resolution |
 | NuntivusRedact.Detectors.Regex | Bounded custom regex and dictionary/keyword detection |
 | NuntivusRedact.Detectors.PersonalData | Email, phone, IP, IBAN, URL and credit-card candidates |
+| NuntivusRedact.Nlp.Abstractions | Replaceable source-free entity recognition contracts |
+| NuntivusRedact.Detectors.Nlp | Optional NLP detector adapter with immutable categories and budgets |
+| NuntivusRedact.Nlp.Onnx | Local CPU cased WordPiece/BIO inference; separately provisioned trusted model/vocabulary |
 | NuntivusRedact.Strategies | Replacement, masking and keyed pseudonymization |
 | NuntivusRedact.Formats.Text | Plain UTF-8 text and bounded staging/reporting |
 | NuntivusRedact.Formats.Csv | Strict comma-separated CSV using CsvHelper |
@@ -38,6 +41,8 @@ Successful processing means configured matches were transformed. It is **not pro
 | NuntivusRedact.AspNetCore | Optional raw-body HTTP adapter |
 
 Core depends on Abstractions, not on DI or ASP.NET. Format packages consume an explicitly supplied text redactor and do not hardcode detectors. The CSV dependency is isolated to the CSV package; its CsvHelper dependency is used under the Apache-2.0 license option.
+
+NLP is opt-in through NlpDetector(IEntityRecognitionProvider). The optional ONNX provider requires trusted local assets, pinned SHA-256 digests and exact BIO output labels; it never downloads or bundles models. Native inference is in-process with bounded windows/admission and best-effort cancellation, not isolation or a hard memory/deadline guarantee. MIT runtime/tokenizer dependencies do not license model weights. Davlan multilingual candidates declare AFL-3.0 and require separate deployment-owner review. Synthetic native tests verify mechanics, not trained-model accuracy. Names/organizations/locations/dates are not necessarily sensitive; configure category policy and evaluate overlap coverage. Provider failures abort rather than silently fall back to regex-only success.
 
 ## Minimal standalone example
 

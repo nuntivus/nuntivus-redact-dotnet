@@ -9,5 +9,7 @@
     <PackageReference Include="NuntivusRedact.Formats.Xml" Version="0.1.0-alpha.1" />
     <PackageReference Include="NuntivusRedact.Strategies" Version="0.1.0-alpha.1" />
     <PackageReference Include="NuntivusRedact.Detectors.PersonalData" Version="0.1.0-alpha.1" />
+    <PackageReference Include="NuntivusRedact.Detectors.Nlp" Version="0.1.0-alpha.1" />
+    <PackageReference Include="NuntivusRedact.Nlp.Onnx" Version="0.1.0-alpha.1" />
   </ItemGroup>
 </Project>

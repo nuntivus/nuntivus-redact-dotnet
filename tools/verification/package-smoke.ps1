@@ -3,7 +3,7 @@ $root = Resolve-Path (Join-Path $PSScriptRoot '../..')
 $feed = Join-Path $root 'artifacts/packages'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $packages = @(Get-ChildItem $feed -Filter '*.nupkg')
-if ($packages.Count -ne 15) { throw "Expected 15 candidate packages, found $($packages.Count). Reconcile implemented projects." }
+if ($packages.Count -ne 18) { throw "Expected 18 candidate packages, found $($packages.Count). Reconcile implemented projects." }
 foreach ($package in $packages) {
     if ($package.Name -notlike 'NuntivusRedact.*.nupkg') { throw "Unexpected package identity: $($package.Name)" }
     $zip = [IO.Compression.ZipFile]::OpenRead($package.FullName)
@@ -33,6 +33,7 @@ New-Item $temp -ItemType Directory | Out-Null
 Copy-Item (Join-Path $PSScriptRoot 'consumer/ConsumerSmoke.csproj.fixture') (Join-Path $temp 'ConsumerSmoke.csproj')
 Copy-Item (Join-Path $PSScriptRoot 'consumer/Program.cs.fixture') (Join-Path $temp 'Program.cs')
 Copy-Item (Join-Path $PSScriptRoot 'consumer/NuGet.Config.fixture') (Join-Path $temp 'NuGet.Config')
+Copy-Item (Join-Path $root 'tests/NuntivusRedact.Nlp.Tests/OnnxFixture.cs') (Join-Path $temp 'OnnxFixture.cs')
 $previousFeed = $env:NUNTIVUSREDACT_PACKAGE_FEED
 try {
     $env:NUNTIVUSREDACT_PACKAGE_FEED = $feed
@@ -40,5 +41,17 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Consumer restore failed; inspect $temp" }
     & dotnet run --project (Join-Path $temp 'ConsumerSmoke.csproj') -c Release --no-restore -tl:off
     if ($LASTEXITCODE -ne 0) { throw "Consumer execution failed; inspect $temp" }
+    $example = $temp + '-nlp-example'
+    New-Item $example -ItemType Directory | Out-Null
+    Copy-Item (Join-Path $temp 'ConsumerSmoke.csproj') (Join-Path $example 'NlpExample.csproj')
+    Copy-Item (Join-Path $temp 'NuGet.Config') (Join-Path $example 'NuGet.Config')
+    $markdown = [IO.File]::ReadAllText((Join-Path $root 'docs/nlp.md'))
+    $snippets = [regex]::Matches($markdown, '(?s)```csharp\r?\n(.*?)```')
+    if ($snippets.Count -ne 1) { throw 'Expected one standalone NLP example.' }
+    [IO.File]::WriteAllText((Join-Path $example 'Program.cs'), $snippets[0].Groups[1].Value)
+    & dotnet restore (Join-Path $example 'NlpExample.csproj') --configfile (Join-Path $example 'NuGet.Config') --packages (Join-Path $temp 'packages') -tl:off
+    if ($LASTEXITCODE -ne 0) { throw "NLP example restore failed; inspect $temp" }
+    & dotnet build (Join-Path $example 'NlpExample.csproj') -c Release --no-restore -tl:off
+    if ($LASTEXITCODE -ne 0) { throw "NLP example compilation failed; inspect $temp" }
     Write-Output "Verified $($packages.Count) packages and symbols; package-only consumer retained at $temp"
 } finally { $env:NUNTIVUSREDACT_PACKAGE_FEED = $previousFeed }

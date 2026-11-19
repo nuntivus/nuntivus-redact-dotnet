@@ -46,7 +46,18 @@ foreach (var processor in provider.GetServices<IDocumentProcessor>())
 }
 _ = provider.GetRequiredService<NuntivusRedactHttpHandler>();
 if (!ReferenceEquals(provider.GetRequiredService<ITextRedactor>(), provider.GetRequiredService<IEditAwareTextRedactor>())) throw new InvalidOperationException("Edit-aware DI identity mismatch.");
-Console.WriteLine("Package-only consumer passed all six formats, Office recovery and HTTP/edit-aware service resolution.");
+using (var fixture = new NuntivusRedact.Nlp.Tests.OnnxFixture())
+using (var nlp = await NuntivusRedact.Nlp.Onnx.OnnxEntityRecognitionProvider.CreateAsync(fixture.Options()))
+{
+    var detector = new NuntivusRedact.Detectors.Nlp.NlpDetector("local-ner", nlp);
+    var policy = new RedactionPolicyBuilder(new FixedReplacementStrategy())
+        .Include(NuntivusRedact.Detectors.Nlp.NlpDetectionCategories.Person).Build();
+    var engine = new RedactionEngine([new(detector)], policy);
+    var result = await engine.RedactAsync("Mario Rossi works at Contoso.");
+    if (result.Text != "[REDACTED] works at Contoso." || result.Detections.Count != 1)
+        throw new InvalidOperationException("Native NLP package verification failed.");
+}
+Console.WriteLine("Package-only consumer passed six formats, Office recovery, HTTP/edit-aware resolution and native synthetic NLP.");
 
 static byte[] OfficeSource(string format)
 {

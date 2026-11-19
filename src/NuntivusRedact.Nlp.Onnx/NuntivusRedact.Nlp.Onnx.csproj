@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsPackable>true</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../NuntivusRedact.Nlp.Abstractions/NuntivusRedact.Nlp.Abstractions.csproj" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+    <PackageReference Include="Microsoft.ML.Tokenizers" />
+    <InternalsVisibleTo Include="NuntivusRedact.Nlp.Tests" />
+  </ItemGroup>
+</Project>

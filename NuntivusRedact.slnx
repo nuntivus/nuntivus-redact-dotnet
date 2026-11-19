@@ -12,6 +12,7 @@
     <Project Path="src/NuntivusRedact.Abstractions/NuntivusRedact.Abstractions.csproj" />
     <Project Path="src/NuntivusRedact.AspNetCore/NuntivusRedact.AspNetCore.csproj" />
     <Project Path="src/NuntivusRedact.Core/NuntivusRedact.Core.csproj" />
+    <Project Path="src/NuntivusRedact.Detectors.Nlp/NuntivusRedact.Detectors.Nlp.csproj" />
     <Project Path="src/NuntivusRedact.Detectors.PersonalData/NuntivusRedact.Detectors.PersonalData.csproj" />
     <Project Path="src/NuntivusRedact.Detectors.Regex/NuntivusRedact.Detectors.Regex.csproj" />
     <Project Path="src/NuntivusRedact.Extensions.DependencyInjection/NuntivusRedact.Extensions.DependencyInjection.csproj" />
@@ -21,6 +22,8 @@
     <Project Path="src/NuntivusRedact.Formats.Office/NuntivusRedact.Formats.Office.csproj" />
     <Project Path="src/NuntivusRedact.Formats.Text/NuntivusRedact.Formats.Text.csproj" />
     <Project Path="src/NuntivusRedact.Formats.Xml/NuntivusRedact.Formats.Xml.csproj" />
+    <Project Path="src/NuntivusRedact.Nlp.Abstractions/NuntivusRedact.Nlp.Abstractions.csproj" />
+    <Project Path="src/NuntivusRedact.Nlp.Onnx/NuntivusRedact.Nlp.Onnx.csproj" />
     <Project Path="src/NuntivusRedact.Ocr.Abstractions/NuntivusRedact.Ocr.Abstractions.csproj" />
     <Project Path="src/NuntivusRedact.Ocr.Tesseract/NuntivusRedact.Ocr.Tesseract.csproj" />
     <Project Path="src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
@@ -32,6 +35,7 @@
     <Project Path="tests/NuntivusRedact.Detectors.Tests/NuntivusRedact.Detectors.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Formats.Tests/NuntivusRedact.Formats.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Integration.Tests/NuntivusRedact.Integration.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Nlp.Tests/NuntivusRedact.Nlp.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Security.Tests/NuntivusRedact.Security.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Strategies.Tests/NuntivusRedact.Strategies.Tests.csproj" />
   </Folder>

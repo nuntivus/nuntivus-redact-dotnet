@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="480" viewBox="0 0 1280 480" role="img" aria-labelledby="banner-title banner-description">
-  <title id="banner-title">NuntivusRedact — detection and redaction for .NET</title>
-  <desc id="banner-description">An original purple document and blue redaction mark beside the NuntivusRedact name. Modular .NET libraries for text, CSV, JSON and XML. Dark background with purple and blue accents.</desc>
+  <title id="banner-title">NuntivusRedact — detection and redaction</title>
+  <desc id="banner-description">An original purple document and blue redaction mark beside the NuntivusRedact name. Modular detection and redaction libraries. Dark background with purple and blue accents.</desc>
   <defs>
     <linearGradient id="document" x1="60" y1="36" x2="196" y2="224" gradientUnits="userSpaceOnUse">
       <stop stop-color="#6d5dfc"/>
@@ -34,19 +34,9 @@
     <rect x="84" y="196" width="50" height="6" rx="3" fill="#c9c4ff"/>
   </g>
   <g font-family="Segoe UI, Inter, Arial, sans-serif">
-    <text x="364" y="133" fill="#a99cff" font-size="17" font-weight="600" letter-spacing="3">MODULAR LIBRARIES · .NET 10</text>
+    <text x="364" y="133" fill="#a99cff" font-size="17" font-weight="600" letter-spacing="3">MODULAR LIBRARIES</text>
     <text x="360" y="221" fill="#f0f6fc" font-size="72" font-weight="700" letter-spacing="-2">Nuntivus<tspan fill="#39baff">Redact</tspan></text>
-    <text x="364" y="277" fill="#c9d1d9" font-size="29">Detection &amp; redaction for .NET applications.</text>
-    <g font-size="15" font-weight="600" text-anchor="middle">
-      <rect x="364" y="308" width="82" height="34" rx="17" fill="#1c2036" stroke="#5145a6"/>
-      <text x="405" y="330" fill="#d5ccff">TEXT</text>
-      <rect x="458" y="308" width="72" height="34" rx="17" fill="#1c2036" stroke="#5145a6"/>
-      <text x="494" y="330" fill="#d5ccff">CSV</text>
-      <rect x="542" y="308" width="82" height="34" rx="17" fill="#10273c" stroke="#225e8c"/>
-      <text x="583" y="330" fill="#8ed8ff">JSON</text>
-      <rect x="636" y="308" width="76" height="34" rx="17" fill="#10273c" stroke="#225e8c"/>
-      <text x="674" y="330" fill="#8ed8ff">XML</text>
-    </g>
+    <text x="364" y="277" fill="#c9d1d9" font-size="29">Composable detection &amp; redaction.</text>
     <text x="64" y="427" fill="#9daab9" font-size="17">Explicit composition. Bounded processing. Extensible by design.</text>
     <text x="1216" y="427" fill="#9daab9" font-size="15" text-anchor="end">OPEN SOURCE · APACHE-2.0</text>
   </g>

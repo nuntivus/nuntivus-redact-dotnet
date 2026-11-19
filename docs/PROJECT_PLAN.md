@@ -1,5 +1,7 @@
 # NuntivusRedact project roadmap
 
+Owner-requested NLP-001 adds optional offline multilingual entity recognition contracts, detector adaptation and a local ONNX provider, with models provisioned separately. See [NLP profiles and deployment gates](nlp.md) and TASKS.md; native isolation and trained-model accuracy are not implied by synthetic inference tests.
+
 Each milestone has a corresponding detailed task in TASKS.md. All are mandatory for full completion. Create projects only when implementing meaningful functionality. Partial delivery is not project completion.
 
 | Milestone | Task | Deliverable |
