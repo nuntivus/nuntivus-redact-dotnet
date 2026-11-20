@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsPackable>true</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../NuntivusRedact.Pdf.Abstractions/NuntivusRedact.Pdf.Abstractions.csproj" />
+    <PackageReference Include="PdfPig" />
+    <None Include="NOTICE.txt" Pack="true" PackagePath="/NOTICE.txt" />
+    <None Include="THIRD-PARTY-LICENSES.txt" Pack="true" PackagePath="/THIRD-PARTY-LICENSES.txt" />
+  </ItemGroup>
+</Project>

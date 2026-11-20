@@ -26,6 +26,10 @@
     <Project Path="src/NuntivusRedact.Nlp.Onnx/NuntivusRedact.Nlp.Onnx.csproj" />
     <Project Path="src/NuntivusRedact.Ocr.Abstractions/NuntivusRedact.Ocr.Abstractions.csproj" />
     <Project Path="src/NuntivusRedact.Ocr.Tesseract/NuntivusRedact.Ocr.Tesseract.csproj" />
+    <Project Path="src/NuntivusRedact.Pdf.Abstractions/NuntivusRedact.Pdf.Abstractions.csproj" />
+    <Project Path="src/NuntivusRedact.Pdf.Experimental/NuntivusRedact.Pdf.Experimental.csproj" />
+    <Project Path="src/NuntivusRedact.Pdf.PdfiumCore/NuntivusRedact.Pdf.PdfiumCore.csproj" />
+    <Project Path="src/NuntivusRedact.Pdf.PdfPig/NuntivusRedact.Pdf.PdfPig.csproj" />
     <Project Path="src/NuntivusRedact.Strategies/NuntivusRedact.Strategies.csproj" />
   </Folder>
   <Folder Name="/tests/">
@@ -36,6 +40,7 @@
     <Project Path="tests/NuntivusRedact.Formats.Tests/NuntivusRedact.Formats.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Integration.Tests/NuntivusRedact.Integration.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Nlp.Tests/NuntivusRedact.Nlp.Tests.csproj" />
+    <Project Path="tests/NuntivusRedact.Pdf.Tests/NuntivusRedact.Pdf.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Security.Tests/NuntivusRedact.Security.Tests.csproj" />
     <Project Path="tests/NuntivusRedact.Strategies.Tests/NuntivusRedact.Strategies.Tests.csproj" />
   </Folder>

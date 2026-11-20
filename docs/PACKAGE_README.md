@@ -37,12 +37,17 @@ Successful processing means configured matches were transformed. It is **not pro
 | NuntivusRedact.Ocr.Abstractions | Replaceable OCR/image contracts without native dependencies |
 | NuntivusRedact.Ocr.Tesseract | Optional .NET Tesseract adapter; trusted language data required |
 | NuntivusRedact.Formats.Images | Bounded PNG/JPEG recognition and permanent word-region pixel replacement |
+| NuntivusRedact.Pdf.Abstractions | Development-only backend-neutral PDF sessions, geometry and fresh-raster contracts; no redaction processor |
+| NuntivusRedact.Pdf.PdfiumCore | Development-only extraction/rendering/raster writing adapter; native removal unsupported |
+| NuntivusRedact.Pdf.PdfPig | Optional managed structural observations and bounded Flate xref decoding; content streams opaque, no secure admission |
 | NuntivusRedact.Extensions.DependencyInjection | Optional explicit DI registration |
 | NuntivusRedact.AspNetCore | Optional raw-body HTTP adapter |
 
 Core depends on Abstractions, not on DI or ASP.NET. Format packages consume an explicitly supplied text redactor and do not hardcode detectors. The CSV dependency is isolated to the CSV package; its CsvHelper dependency is used under the Apache-2.0 license option.
 
 NLP is opt-in through NlpDetector(IEntityRecognitionProvider). The optional ONNX provider requires trusted local assets, pinned SHA-256 digests and exact BIO output labels; it never downloads or bundles models. Native inference is in-process with bounded windows/admission and best-effort cancellation, not isolation or a hard memory/deadline guarantee. MIT runtime/tokenizer dependencies do not license model weights. Davlan multilingual candidates declare AFL-3.0 and require separate deployment-owner review. Synthetic native tests verify mechanics, not trained-model accuracy. Names/organizations/locations/dates are not necessarily sensitive; configure category policy and evaluate overlap coverage. Provider failures abort rather than silently fall back to regex-only success.
+
+These PDF modules are low-level development APIs, not supported PDF redaction. Use one caller-owned shared PdfiumRuntime per process, no other PDFium users, dispose sessions/writers before runtime. PdfPigStructuralInspector is independently replaceable and needs no native runtime; it observes current dictionaries from classic tables or bounded Flate xref/object streams, never decodes page/image/font/metadata payloads or certifies admission. PNG predictors 10–15 support one-color 8-bit xref rows matching width. Direct-Flate object streams require bounded counts, canonical unique header numbers/increasing offsets and exact current-xref container/index membership; no predictors/Extends/superseded members. Inflated and reconstructed structural bytes charge cumulative decoded limits. Hybrid xrefs, unfiltered structural streams, TIFF/other predictor layouts and encryption remain unsupported. Historical/free/raw payloads and complete hidden-content inventory remain outside its profile. Parsing is in-process, not sandboxed or hard-cancelable. Supported-profile preflight, detector/OCR orchestration, staged secure validation, Linux consumers and native attribution review remain unfinished. The PdfPig adapter includes upstream notices and supplemental component licenses.
 
 ## Minimal standalone example
 

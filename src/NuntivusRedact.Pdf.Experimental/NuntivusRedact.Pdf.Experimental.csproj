@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../NuntivusRedact.Pdf.Abstractions/NuntivusRedact.Pdf.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

@@ -3,7 +3,7 @@ $root = Resolve-Path (Join-Path $PSScriptRoot '../..')
 $feed = Join-Path $root 'artifacts/packages'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $packages = @(Get-ChildItem $feed -Filter '*.nupkg')
-if ($packages.Count -ne 18) { throw "Expected 18 candidate packages, found $($packages.Count). Reconcile implemented projects." }
+if ($packages.Count -ne 21) { throw "Expected 21 candidate packages, found $($packages.Count). Reconcile implemented projects." }
 foreach ($package in $packages) {
     if ($package.Name -notlike 'NuntivusRedact.*.nupkg') { throw "Unexpected package identity: $($package.Name)" }
     $zip = [IO.Compression.ZipFile]::OpenRead($package.FullName)
@@ -17,6 +17,14 @@ foreach ($package in $packages) {
         try { [xml]$metadata = $reader.ReadToEnd() } finally { $reader.Dispose() }
         if ($metadata.package.metadata.license.InnerText -ne 'Apache-2.0') { throw "Unexpected license in $($package.Name)" }
         $id = [string]$metadata.package.metadata.id
+        if ($id -eq 'NuntivusRedact.Pdf.PdfPig') {
+            foreach ($notice in @('NOTICE.txt', 'THIRD-PARTY-LICENSES.txt')) {
+                if ($entries -notcontains $notice) { throw "Missing $notice in $id" }
+                $noticeReader = [IO.StreamReader]::new($zip.GetEntry($notice).Open())
+                try { $noticeText = $noticeReader.ReadToEnd() } finally { $noticeReader.Dispose() }
+                if ($noticeText -notmatch 'Adobe' -or $noticeText -notmatch 'pdfbox') { throw "Incomplete attribution in $notice for $id" }
+            }
+        }
         if (-not $id.StartsWith('NuntivusRedact.', [StringComparison]::Ordinal)) { throw "Unexpected package id: $id" }
         if ($entries -notcontains "lib/net10.0/$id.dll") { throw "Assembly identity does not match package id: $id" }
         foreach ($dependency in $metadata.package.metadata.dependencies.group.dependency) {
@@ -53,5 +61,21 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "NLP example restore failed; inspect $temp" }
     & dotnet build (Join-Path $example 'NlpExample.csproj') -c Release --no-restore -tl:off
     if ($LASTEXITCODE -ne 0) { throw "NLP example compilation failed; inspect $temp" }
+    $pdf = $temp + '-pdf'
+    New-Item $pdf -ItemType Directory | Out-Null
+    Copy-Item (Join-Path $PSScriptRoot 'consumer/PdfSmoke.csproj.fixture') (Join-Path $pdf 'PdfSmoke.csproj')
+    Copy-Item (Join-Path $PSScriptRoot 'consumer/PdfProgram.cs.fixture') (Join-Path $pdf 'Program.cs')
+    Copy-Item (Join-Path $temp 'NuGet.Config') (Join-Path $pdf 'NuGet.Config')
+    Copy-Item (Join-Path $root 'tests/NuntivusRedact.Pdf.Tests/PdfFixtures.cs') (Join-Path $pdf 'PdfFixtures.cs')
+    Copy-Item (Join-Path $root 'tests/NuntivusRedact.Pdf.Tests/StructuralPdfFixtures.cs') (Join-Path $pdf 'StructuralPdfFixtures.cs')
+    & dotnet restore (Join-Path $pdf 'PdfSmoke.csproj') --configfile (Join-Path $pdf 'NuGet.Config') --packages (Join-Path $temp 'packages') -tl:off
+    if ($LASTEXITCODE -ne 0) { throw "PDF consumer restore failed; inspect $pdf" }
+    & dotnet run --project (Join-Path $pdf 'PdfSmoke.csproj') -c Release --no-restore -tl:off
+    if ($LASTEXITCODE -ne 0) { throw "PDF consumer execution failed; inspect $pdf" }
+    & dotnet publish (Join-Path $pdf 'PdfSmoke.csproj') -c Release --no-restore --no-self-contained -o (Join-Path $pdf 'publish') -tl:off
+    if ($LASTEXITCODE -ne 0) { throw "PDF consumer publish preparation failed; inspect $pdf" }
+    & dotnet (Join-Path $pdf 'publish/PdfSmoke.dll')
+    if ($LASTEXITCODE -ne 0) { throw "Published-output PDF consumer failed; inspect $pdf" }
     Write-Output "Verified $($packages.Count) packages and symbols; package-only consumer retained at $temp"
+    Write-Output "PDF low-level NuGet consumer retained at $pdf; no PDF redaction support implied."
 } finally { $env:NUNTIVUSREDACT_PACKAGE_FEED = $previousFeed }

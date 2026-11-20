@@ -17,6 +17,7 @@ NuntivusRedact is an **alpha .NET 10 library**, not a complete document-sanitiza
 | Host the optional raw-body HTTP adapter | [HTTP integration](HTTP.md) |
 | Evaluate security boundaries | [Threat model and limitations](SECURITY.md) |
 | Configure replaceable OCR and embedded Office pictures | [OCR/images](formats/ocr.md) |
+| Inspect experimental PDF backend contracts and current gates | [PDF development profile](formats/pdf.md) |
 | Report a vulnerability privately | [Security reporting policy](../SECURITY.md) |
 
 ## Develop and extend

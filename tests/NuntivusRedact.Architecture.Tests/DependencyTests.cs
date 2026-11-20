@@ -51,7 +51,9 @@ public sealed class DependencyTests
             typeof(TextDocumentProcessor).Assembly, typeof(OfficeLimits).Assembly,
             typeof(Ocr.IOcrProvider).Assembly, typeof(Ocr.Tesseract.TesseractOcrProvider).Assembly,
             typeof(Formats.Images.RasterImageRedactor).Assembly, typeof(Nlp.IEntityRecognitionProvider).Assembly,
-            typeof(Detectors.Nlp.NlpDetector).Assembly, typeof(Nlp.Onnx.OnnxEntityRecognitionProvider).Assembly];
+            typeof(Detectors.Nlp.NlpDetector).Assembly, typeof(Nlp.Onnx.OnnxEntityRecognitionProvider).Assembly,
+            typeof(Pdf.IPdfBackend).Assembly, typeof(Pdf.PdfiumCore.PdfiumBackend).Assembly,
+            typeof(Pdf.PdfPig.PdfPigStructuralInspector).Assembly, typeof(Pdf.Experimental.ExperimentalPdfRedactor).Assembly];
         var allowed = new Dictionary<string, string[]>
         {
             ["NuntivusRedact.Abstractions"] = [],
@@ -67,7 +69,11 @@ public sealed class DependencyTests
             ["NuntivusRedact.Ocr.Abstractions"] = ["NuntivusRedact.Abstractions"],
             ["NuntivusRedact.Ocr.Tesseract"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Ocr.Abstractions"],
             ["NuntivusRedact.Formats.Images"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Ocr.Abstractions"],
-            ["NuntivusRedact.Formats.Json"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Formats.Text"]
+            ["NuntivusRedact.Formats.Json"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Formats.Text"],
+            ["NuntivusRedact.Pdf.Abstractions"] = ["NuntivusRedact.Abstractions"],
+            ["NuntivusRedact.Pdf.PdfiumCore"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Pdf.Abstractions"],
+            ["NuntivusRedact.Pdf.PdfPig"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Pdf.Abstractions"],
+            ["NuntivusRedact.Pdf.Experimental"] = ["NuntivusRedact.Abstractions", "NuntivusRedact.Pdf.Abstractions"]
         };
         foreach (var assembly in assemblies)
             foreach (var reference in assembly.GetReferencedAssemblies().Where(r => r.Name!.StartsWith("NuntivusRedact.", StringComparison.Ordinal)))
@@ -82,5 +88,20 @@ public sealed class DependencyTests
             visiting.Remove(name); visited.Add(name);
         }
         foreach (var name in allowed.Keys) if (!visited.Contains(name)) Visit(name);
+    }
+
+    [Fact]
+    public void PdfContractsAndCoreDoNotReferenceNativeSdk()
+    {
+        foreach (var assembly in new[] { typeof(Pdf.IPdfBackend).Assembly, typeof(RedactionEngine).Assembly,
+            typeof(Pdf.Experimental.ExperimentalPdfRedactor).Assembly })
+            Assert.DoesNotContain(assembly.GetReferencedAssemblies(), reference => reference.Name == "PDFiumCore" ||
+                reference.Name!.StartsWith("UglyToad.PdfPig", StringComparison.Ordinal));
+        Assert.Contains(typeof(Pdf.PdfiumCore.PdfiumBackend).Assembly.GetReferencedAssemblies(),
+            reference => reference.Name == "PDFiumCore");
+        Assert.DoesNotContain(typeof(Pdf.PdfPig.PdfPigStructuralInspector).Assembly.GetReferencedAssemblies(),
+            reference => reference.Name == "PDFiumCore" || reference.Name == "NuntivusRedact.Pdf.PdfiumCore");
+        Assert.DoesNotContain(typeof(Pdf.PdfiumCore.PdfiumBackend).Assembly.GetReferencedAssemblies(),
+            reference => reference.Name!.StartsWith("UglyToad.PdfPig", StringComparison.Ordinal) || reference.Name == "NuntivusRedact.Pdf.PdfPig");
     }
 }

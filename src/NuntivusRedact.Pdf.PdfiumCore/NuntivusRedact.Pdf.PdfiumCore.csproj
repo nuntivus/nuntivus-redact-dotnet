@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsPackable>true</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../NuntivusRedact.Pdf.Abstractions/NuntivusRedact.Pdf.Abstractions.csproj" />
+    <PackageReference Include="PDFiumCore" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,42 @@
+using NuntivusRedact.Pdf;
+using NuntivusRedact.Pdf.PdfPig;
+using NuntivusRedact.Pdf.PdfiumCore;
+using NuntivusRedact.Pdf.Tests;
+
+IPdfStructuralInspector inspector = new PdfPigStructuralInspector();
+var inventory = await inspector.InspectAsync(PdfFixtures.Create(hiddenContent: true), new PdfInspectionLimits());
+if (inventory.ObjectCount != 8 || inventory.MetadataStreamCount != 1 || inventory.UnreferencedObjectCount != 1 ||
+    !inventory.Features.HasFlag(PdfStructuralFeatures.OpaqueStreams)) throw new InvalidOperationException("Synthetic structural inspection failed.");
+var structural = await inspector.InspectAsync(StructuralPdfFixtures.CompressedXref(), new PdfInspectionLimits());
+if (!structural.Features.HasFlag(PdfStructuralFeatures.DecodedStructuralStreams) || structural.PageCount != 1)
+    throw new InvalidOperationException("Synthetic bounded xref decoding failed.");
+var predicted = await inspector.InspectAsync(StructuralPdfFixtures.CompressedXref(predictor: 15), new PdfInspectionLimits());
+if (predicted.PageCount != 1 || !predicted.Features.HasFlag(PdfStructuralFeatures.DecodedStructuralStreams))
+    throw new InvalidOperationException("Synthetic bounded predictor decoding failed.");
+var compressedObjects = await inspector.InspectAsync(StructuralPdfFixtures.CompressedXref(flateObjectStream: true), new PdfInspectionLimits());
+if (compressedObjects.PageCount != 1 || !compressedObjects.Features.HasFlag(PdfStructuralFeatures.ObjectStreams))
+    throw new InvalidOperationException("Synthetic guarded object stream failed.");
+using var runtime = new PdfiumRuntime();
+IPdfBackend backend = new PdfiumBackend(runtime);
+var limits = new PdfBackendLimits();
+if (backend.Capabilities.NativeRemoval) throw new InvalidOperationException("Unexpected native removal capability.");
+if (backend is not IPdfNativeObjectBackend nativeBackend) throw new InvalidOperationException("Missing experimental native object interface.");
+var nativeOutput = await nativeBackend.RemoveObjectsAsync(PdfFixtures.Create(hiddenContent: true),
+    [new PdfObjectRemovalRegion(0, 0, 35, 200, 80)], limits);
+await using var nativeReopened = await backend.OpenAsync(nativeOutput, limits);
+if ((await nativeReopened.ReadPageAsync(0)).Text.Length != 0 ||
+    PdfFixtures.Recover(nativeOutput.ToArray()).Contains(PdfFixtures.HiddenSecret, StringComparison.Ordinal))
+    throw new InvalidOperationException("Synthetic native object recovery failed.");
+await using var source = await backend.OpenAsync(PdfFixtures.Create(hiddenContent: true), limits);
+var page = await source.ReadPageAsync(0);
+if (!page.Text.Contains(PdfFixtures.Secret, StringComparison.Ordinal)) throw new InvalidOperationException("Synthetic extraction failed.");
+var raster = await source.RenderPageAsync(0, 200, 200);
+await using var writer = await backend.CreateRasterWriterAsync(limits);
+await writer.AddPageAsync(page.Size, raster);
+var output = await writer.CompleteAsync();
+await using var rebuilt = await backend.OpenAsync(output, limits);
+if ((await rebuilt.ReadPageAsync(0)).Text.Length != 0) throw new InvalidOperationException("Unexpected output text layer.");
+var rebuiltRaster = await rebuilt.RenderPageAsync(0, 200, 200);
+if (!raster.Bgra.Span.SequenceEqual(rebuiltRaster.Bgra.Span)) throw new InvalidOperationException("Synthetic raster roundtrip failed.");
+if (PdfFixtures.Recover(output.ToArray()).Contains(PdfFixtures.HiddenSecret, StringComparison.Ordinal)) throw new InvalidOperationException("Synthetic hidden metadata retained.");
+Console.WriteLine("PDF low-level package smoke passed; no redaction support implied.");
